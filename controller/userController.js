@@ -2,8 +2,31 @@ const uuidv4 = require('uuidv4');
 const bcrypt = require('bcrypt');
 const User = require('../models').user; // loads index.js
 const authorization = require('../authorization/authorize');
-const { response } = require('express');
-const { use } = require('bcrypt/promises');
+
+exports.fetchUser = async (req, res) => {
+
+    console.log("Fetch  User Controller Started");
+    console.log("Request Info", req.body);
+    
+
+    const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
+    console.log("Auth response received");
+
+    if(userObject != null){
+
+        console.log("Successful Authorization");
+
+        let temp = userObject.toJSON();
+        delete temp.password;
+        console.log("Response", temp);
+        return res.status(200).send(temp);
+    } else {
+        res.status(400).send({
+            message: "User not found."
+        });
+    }
+};
+
 
 exports.createUser = async (req, res) => {
 
@@ -18,7 +41,7 @@ exports.createUser = async (req, res) => {
 
 
             const isUserNamePresent = await User.findOne({ where: {username: username}});
-            console.log("Found user ", isUserNamePresent);
+            console.log(" user found ");
             
 
             if(isUserNamePresent != null) {
@@ -56,7 +79,7 @@ exports.createUser = async (req, res) => {
                     .catch(err => {
 
                         res.status(500).send({
-                            message: err.message || "Some error occurred while creating the User."
+                            message: err.message
                         });
                     });
 
@@ -80,9 +103,8 @@ exports.updateUser = async (req, res) => {
     
 
     const fetchUser = await authorization.authorizeAndFetchUserInfo(req, res, User);
-    console.log("Auth returned : ", fetchUser);
 
-    if(fetchUser){
+    if(fetchUser !== null){
 
         console.log("Successful Authorization");
 
@@ -108,29 +130,16 @@ exports.updateUser = async (req, res) => {
             });
 
         }
+    } else {
+        res.status(400).send({
+            message: "User not found."
+        });
     }
 };
 
 
 
-exports.fetchUser = async (req, res) => {
 
-    console.log("Fetch  User Controller Started");
-    console.log("Request Info", req.body);
-    
-
-    const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-
-    if(userObject != null){
-
-        console.log("Successful Authorization");
-
-        let temp = userObject.toJSON();
-        delete temp.password;
-        console.log("Response", temp);
-        return res.status(200).send(temp);
-    }
-};
 
 
 
