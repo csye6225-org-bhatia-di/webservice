@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "webservice to create a RESTFUL API",
   "scripts": {
-    "start": "node index"
+    "start": "node index",
+    "test": "jest"
   },
   "author": "Diksha Bhatia",
   "license": "ISC",
