@@ -4,7 +4,7 @@
   "description": "webservice to create a RESTFUL API",
   "scripts": {
     "start": "node index",
-    "test": "jest"
+    "test": "mocha"
   },
   "author": "Diksha Bhatia",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "uuidv4": "^6.2.12"
   },
   "devDependencies": {
+    "mocha": "^9.2.0",
     "nodemon": "^2.0.15",
     "sequelize-cli": "^6.4.1"
   }
