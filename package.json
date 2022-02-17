@@ -4,7 +4,11 @@
   "description": "webservice to create a RESTFUL API",
   "scripts": {
     "start": "node index",
-    "test": "mocha"
+    "test": "mocha",
+    "make-model": "npx sequelize-cli model:generate --name User --attributes first_name:string,last_name:string,user_name:string, password: string",
+    "db-migrate": "npx sequelize-cli db:migrate",
+    "db-reset": "npx sequelize-cli db:migrate:undo:all",
+    "db:create": "sequelize-cli db:create"
   },
   "author": "Diksha Bhatia",
   "license": "ISC",
