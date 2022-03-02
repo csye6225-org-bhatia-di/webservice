@@ -23,15 +23,15 @@ build {
   ]
 
   provisioner "file" {
-      source = "./webservice.zip"
+      source = "packer/webservice.zip"
       destination = "/tmp/webservice.zip"
   }
    provisioner "file" {
-      source = "./pgdg.repo"
+      source = "packer/pgdg.repo"
       destination = "/tmp/pgdg.repo"
   }
   provisioner "file" {
-      source = "./webservice.service"
+      source = "packer/webservice.service"
       destination = "/tmp/webservice.service"
   }
 
