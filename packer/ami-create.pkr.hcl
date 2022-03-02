@@ -8,9 +8,9 @@ packer {
 }
 
 builders {
-  type = "amazon-ebs",
-  access_key= ${var.access_key}
-  secret_key= ${var.secret_key} 
+  type = "amazon-ebs"
+  access_key = var.access_key
+  secret_key = var.secret_key 
 
 }
 
