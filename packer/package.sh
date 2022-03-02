@@ -1,6 +1,7 @@
 #!/bin/bash
 sleep 30
 echo updating
+echo $AWS_ACCESS_KEY_ID
 sudo yum -y update
 echo installing zip
 sudo yum install -y zip unzip

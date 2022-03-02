@@ -7,10 +7,6 @@ packer {
   }
 }
 
-
-
-
-
 source "amazon-ebs" "ubuntu" {
   ami_name      = "webservice-ami"
   ssh_username = "ec2-user"
@@ -42,11 +38,6 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = [
-      "FOO=hello world",
-      "access_key = $env.aws_access_key_id",
-      "secret_key = $env.aws_secret_access_key"
-    ]
       script = "packer/package.sh"
   }
 }
