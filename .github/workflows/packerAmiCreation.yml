@@ -1,4 +1,4 @@
-name: Webservice ami Creation with Packer
+name: AMI Creation with Packer
 
 on:
   push:
@@ -11,6 +11,7 @@ env:
   AWS_DEFAULT_OUTPUT: json
 
 jobs:
+  
   packer:
     runs-on: ubuntu-latest
     name: webservice-packer-ami-creation
@@ -21,6 +22,18 @@ jobs:
 
       - run: "pwd"
       - run: "ls"
+
+      - name: Creating Zip file for packer to create ami
+        uses: papeloto/action-zip@v1
+        with:           
+           recursive: false
+           dest: webservice.zip
+
+      - name: Uploading zip to workspace   
+        uses: actions/upload-artifact@v1
+        with:
+           name: my-artifact
+           path: ${{ github.workspace }}/webservice.zip
 
        # init  templates
       - name: Init Webservice Packer
@@ -44,7 +57,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+          aws-region: us-east-1  
           
       # build artifact
       - name: Build Artifact
