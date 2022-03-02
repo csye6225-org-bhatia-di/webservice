@@ -41,14 +41,15 @@ jobs:
       - run: "export AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }}"
       - run: "export AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
 
-      - name: Configuring AWS Credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          role-to-assume: my-github-actions-role
+          aws-region: us-east-2
+          role-to-assume: arn:aws:iam::123456789100:role/my-github-actions-role          
           role-duration-seconds: 1200
+          role-session-name: MySessionName
       # build artifact
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
