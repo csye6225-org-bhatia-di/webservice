@@ -29,7 +29,7 @@ jobs:
         with:
           command: build
           arguments: "-color=false -on-error=abort"
-          target: ${{ github.repository }}/packer/ami-create.pkr.hcl
+          target: /packer/ami-create.pkr.hcl
         env:
           PACKER_LOG: 1
 
