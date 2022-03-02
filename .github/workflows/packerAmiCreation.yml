@@ -38,6 +38,8 @@ jobs:
      
       - run: "export aws_access_key_id= ${{ secrets.AWS_ACCESS_KEY_ID }}"
       - run: "export aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+      - run: "printenv aws_access_key_id"
+      - run: "printenv aws_secret_access_key"
       # build artifact
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
