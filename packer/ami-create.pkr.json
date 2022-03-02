@@ -1,0 +1,57 @@
+{
+    "variables": {      
+      "aws_region": "us-east-1",
+      "vpc_id":"vpc-01397e9c7c9db09b3",
+      "subnet_id": "subnet-0a2a2c49be03c11b7",
+      "ssh_username": "ec2-user",
+      "source_ami": "ami-033b95fb8079dc481",
+      "ami_source_owner": "274019733827"
+    },
+    
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "access_key": "{{env `aws_access_key`}}",
+        "secret_key": "{{env `aws_secret_key`}}",
+        "region": "{{env `aws_region`}}",
+        "instance_type": "t2.micro",
+        "source_ami": "{{user `source_ami`}}",
+        "vpc_id": "{{user `vpc_id`}}",
+        "subnet_id": "{{user `subnet_id`}}",
+        "ssh_username": "{{user `ssh_username`}}",
+        "ssh_timeout":"30m",
+        "ami_name": "webservice_ami_{{timestamp}}",
+        "ami_users": ["105634846355"],
+        "ami_description": "AMI for CSYE-6225",
+        "launch_block_device_mappings": [
+          {
+            "device_name": "/dev/xvda",
+            "volume_size": 8,
+            "volume_type": "gp2",
+            "delete_on_termination": true
+          }
+        ]
+      }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "packer/webservice.zip",
+            "destination": "/tmp/webservice.zip"
+        },
+        {
+            "type": "file",
+            "source": "packer/pgdg.repo",
+            "destination": "/tmp/pgdg.repo"
+        },
+        {
+            "type": "file",
+            "source": "packer/webservice.service",
+            "destination": "/tmp/webservice.service"
+        },
+        {
+            "type": "shell",
+            "scripts": "packer/package.sh"
+        }
+    ]
+  }

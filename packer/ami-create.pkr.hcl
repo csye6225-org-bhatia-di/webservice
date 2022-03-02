@@ -13,11 +13,13 @@ source "amazon-ebs" "ubuntu" {
   instance_type = "t2.micro"
   region        = "us-east-1"
   source_ami = "ami-033b95fb8079dc481" 
+  
 }
+
 
 build {
   name    = "webservice-build-ami"
-
+  
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
