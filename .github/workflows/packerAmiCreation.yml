@@ -1,4 +1,4 @@
-name: Webservice AMI Creation with Packer
+name: Webservice ami Creation with Packer
 
 on:
   pull_request:
