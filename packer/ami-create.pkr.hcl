@@ -7,12 +7,9 @@ packer {
   }
 }
 
-builders {
-  type = "amazon-ebs"
-  access_key = var.access_key
-  secret_key = var.secret_key 
 
-}
+
+
 
 source "amazon-ebs" "ubuntu" {
   ami_name      = "webservice-ami"
@@ -20,12 +17,14 @@ source "amazon-ebs" "ubuntu" {
   instance_type = "t2.micro"
   region        = "us-east-1"
   source_ami = "ami-033b95fb8079dc481" 
+  access_key = "$var.access_key"
+  secret_key = "$var.secret_key"
 }
 
 
 build {
   name    = "webservice-build-ami"
-
+  
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
