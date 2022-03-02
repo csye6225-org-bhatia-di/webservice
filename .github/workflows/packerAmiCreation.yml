@@ -44,13 +44,13 @@ jobs:
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
         with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
           command: build
           arguments: "-color=false -on-error=abort"
           target: packer/ami-create.pkr.hcl
         env:
           PACKER_LOG: 1
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
 
       # additional steps to process artifacts
