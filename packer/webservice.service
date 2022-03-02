@@ -1,0 +1,17 @@
+[Unit]
+Description=First Rest App
+After=cloud-final.service
+
+[Service]
+WorkingDirectory=/tmp/webservice
+ExecStart=/usr/bin/nodemon /tmp/webservice/index.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=webservice
+User=ec2-user
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=cloud-init.target

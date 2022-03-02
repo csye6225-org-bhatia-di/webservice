@@ -1,0 +1,41 @@
+packer {
+  required_plugins {
+    amazon = {
+      version = ">= 0.0.1"
+      source  = "github.com/hashicorp/amazon"
+    }
+  }
+}
+
+source "amazon-ebs" "ubuntu" {
+  ami_name      = "webservice-ami"
+  ssh_username = "ec2-user"
+  instance_type = "t2.micro"
+  region        = "us-east-1"
+  source_ami = "ami-033b95fb8079dc481" 
+}
+
+build {
+  name    = "webservice-build-ami"
+
+  sources = [
+    "source.amazon-ebs.ubuntu"
+  ]
+
+  provisioner "file" {
+      source = "./webservice.zip"
+      destination = "/tmp/webservice.zip"
+  }
+   provisioner "file" {
+      source = "./pgdg.repo"
+      destination = "/tmp/pgdg.repo"
+  }
+  provisioner "file" {
+      source = "./webservice.service"
+      destination = "/tmp/webservice.service"
+  }
+
+  provisioner "shell" {
+      script = "./package.sh"
+  }
+}
