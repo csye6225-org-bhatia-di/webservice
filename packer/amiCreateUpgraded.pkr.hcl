@@ -37,6 +37,10 @@ variable "aws_secret_key" {
   type= string
   default = env("AWS_SECRET_ACCESS_KEY")
 }
+variable "zip_location" {
+  type= string
+  default = env("GITHUB_WORKSPACE")
+}
 
 locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 
@@ -67,7 +71,7 @@ build {
 
   provisioner "file" {
     destination = "/tmp/webservice.zip"
-    source      = "packer/webservice.zip"
+    source      = "${var.zip_location}/webservice.zip"
   }
 
   provisioner "file" {
