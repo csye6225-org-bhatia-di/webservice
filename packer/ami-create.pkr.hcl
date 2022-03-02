@@ -17,8 +17,7 @@ source "amazon-ebs" "ubuntu" {
   instance_type = "t2.micro"
   region        = "us-east-1"
   source_ami = "ami-033b95fb8079dc481" 
-  access_key = "$var.access_key"
-  secret_key = "$var.secret_key"
+  
 }
 
 
@@ -43,6 +42,11 @@ build {
   }
 
   provisioner "shell" {
+    environment_vars = [
+      "FOO=hello world",
+      "access_key = $env.aws_access_key_id",
+      "secret_key = $env.aws_secret_access_key"
+    ]
       script = "packer/package.sh"
   }
 }

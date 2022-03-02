@@ -48,9 +48,11 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region: us-east-1
           command: build
-          arguments: " -var 'access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' -var 'secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -color=false -on-error=abort"
+          arguments: " -color=false -on-error=abort"
           target: packer/ami-create.pkr.hcl
         env:
           PACKER_LOG: 1
+          aws_access_key_id:  ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # additional steps to process artifacts
