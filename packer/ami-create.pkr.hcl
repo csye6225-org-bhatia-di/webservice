@@ -36,6 +36,6 @@ build {
   }
 
   provisioner "shell" {
-      script = "./package.sh"
+      script = "packer/package.sh"
   }
 }
