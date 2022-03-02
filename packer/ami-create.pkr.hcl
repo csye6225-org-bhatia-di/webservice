@@ -7,6 +7,13 @@ packer {
   }
 }
 
+builders {
+  type = "amazon-ebs",
+  access_key= {{user `aws_access_key`}}
+  secret_key= {{user `aws_secret_key`}}  
+
+}
+
 source "amazon-ebs" "ubuntu" {
   ami_name      = "webservice-ami"
   ssh_username = "ec2-user"
@@ -14,6 +21,7 @@ source "amazon-ebs" "ubuntu" {
   region        = "us-east-1"
   source_ami = "ami-033b95fb8079dc481" 
 }
+
 
 build {
   name    = "webservice-build-ami"
