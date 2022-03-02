@@ -21,7 +21,7 @@ jobs:
         with:
           command: validate
           arguments: -syntax-only
-          target: ${{ github.repository }}/packer/ami-create.pkr.hcl
+          target:  /packer/ami-create.pkr.hcl
 
       # build artifact
       - name: Build Artifact
