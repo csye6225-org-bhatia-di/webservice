@@ -5,10 +5,13 @@
   "scripts": {
     "start": "node index",
     "test": "mocha",
-    "make-model": "npx sequelize-cli model:generate --name User --attributes first_name:string,last_name:string,user_name:string, password: string",
+    "make-model": "npx sequelize-cli model:generate --name Blah --attributes first_name:string,last_name:string",
     "db-migrate": "npx sequelize-cli db:migrate",
     "db-reset": "npx sequelize-cli db:migrate:undo:all",
-    "db:create": "sequelize-cli db:create"
+    "db:create": "sequelize-cli db:create",
+    "db:makemigrations": "./node_modules/sequelize-auto-migrations/bin/makemigration.js",
+    "init": "npx sequelize init"
+
   },
   "author": "Diksha Bhatia",
   "license": "ISC",
@@ -23,6 +26,7 @@
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.16.1",
+    "sequelize-auto-migrations": "^1.0.3",
     "uuid4": "^2.0.2",
     "uuidv4": "^6.2.12"
   },
