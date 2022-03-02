@@ -36,7 +36,8 @@ jobs:
           target:  packer/ami-create.pkr.hcl
 
      
-
+      - run: "export aws_access_key_id= ${{ secrets.AWS_ACCESS_KEY_ID }}"
+      - run: "export aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       # build artifact
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
