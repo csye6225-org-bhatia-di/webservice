@@ -23,6 +23,14 @@ jobs:
           arguments: -syntax-only
           target:  packer/ami-create.pkr.hcl
 
+      # init  templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+          arguments: -syntax-only
+          
+
       # build artifact
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
