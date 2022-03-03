@@ -30,17 +30,9 @@ jobs:
 
   packer:
     runs-on: ubuntu-latest
-    name: webservice-packer-ami-creation
     needs: zipcreation
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - run: "pwd"
-      - run: "ls"
-
-          
+    steps:  
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with: 
@@ -71,17 +63,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  
 
+      # Runs a single command using the runners shell
       - name: Build AMI with Packer
-        uses: hashicorp/packer-github-actions@master
+        uses: ExitoLab/packer_build_action_aws@v0.2.10
         with:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region: us-east-1
-          command: build
-          working_directory: packer
-          arguments: " -color=false -on-error=abort"
-          target: amiCreateUpgraded.pkr.hcl
+          templateFile: "packer/amiCreateUpgraded.pkr.hcl"
+          workingDir: '.' 
         env:
           PACKER_LOG: 1
           AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}     
+
+      
