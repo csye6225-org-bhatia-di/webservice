@@ -72,7 +72,7 @@ build {
     inline = [
       "echo ################# Starting provisioners ############################",
       "echo ${var.zip_location}",
-      "ls ${var.zip_location}/"
+     
     ]
   }
 
