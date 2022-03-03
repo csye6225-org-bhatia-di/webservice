@@ -13,12 +13,20 @@ sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'Vcadd';"
 sudo -u postgres psql -c 'CREATE DATABASE csye6225';
 curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 sudo yum install -y nodejs
+echo "########## Unzipped #############"
+ls
+sleep 30
 cd /tmp/
+echo "Inside tmp/"
+ls
 unzip webservice.zip
 sleep 40
 echo "########## Unzipped #############"
 ls
 cd webservice
+sleep 30
+ls
+sleep 30
 sudo npm install bcrypt
 sudo npm install
 sudo npm install -g nodemon
