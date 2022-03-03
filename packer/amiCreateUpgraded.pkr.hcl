@@ -70,8 +70,8 @@ build {
   sources = ["source.amazon-ebs.webservice"]
   provisioner "shell" {
     inline = [
-      "echo ################# Starting provisioners ############################"
-      "echo ${var.zip_location}"
+      "echo ################# Starting provisioners ############################",
+      "echo ${var.zip_location}",
       "ls ${var.zip_location}/"
     ]
   }
