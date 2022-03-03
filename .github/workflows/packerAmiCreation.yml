@@ -35,3 +35,28 @@ jobs:
         with:
            name: my-artifact
            path: ${{ github.workspace }}/webservice.zip
+
+
+      - name: Init Webservice Packer
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+          target:  packer/ami-create.pkr.hcl
+
+      # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target:  packer/ami-create.pkr.hcl
+
+     
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  
+
