@@ -1,7 +1,8 @@
 name: AMI Creation with Packer
 
 on:
-  push:
+  pull_request:
+    types: [ closed ]
     branches: [ main ]
 
 env:
@@ -60,3 +61,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  
 
+      - name: Build AMI with Packer
+        uses: hashicorp/packer-github-actions@master
+        with:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
+          command: build
+          arguments: " -color=false -on-error=abort"
+          target: packer/amiCreateUpgraded.pkr.hcl
+        env:
+          PACKER_LOG: 1
+          AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
