@@ -25,7 +25,8 @@ jobs:
 
       - name: Creating Zip file for packer to create ami
         uses: papeloto/action-zip@v1
-        with:           
+        with:
+           files: authorization/ config/ controller/ migrations/ models/ packer/ routes/ test/ .sequelizerc index.js package.json             
            recursive: false
            dest: webservice.zip
 
