@@ -23,18 +23,27 @@ jobs:
       - run: "pwd"
       - run: "ls"
 
-      - name: Creating Zip file for packer to create ami
-        uses: papeloto/action-zip@v1
-        with:
-           files: authorization/ config/ controller/ migrations/ models/ packer/ routes/ test/ .sequelizerc index.js package.json             
-           recursive: false
-           dest: webservice.zip
+      
 
-      - name: Uploading zip to workspace   
-        uses: actions/upload-artifact@v1
+      
+      - name: Zip Release code
+        uses: thedoctor0/zip-release@master
         with:
-           name: webservice
-           path: ${{ github.workspace }}
+          type: 'zip'
+          filename: 'webservice.zip'
+          exclusions: '*.git* /*node_modules/* .editorconfig'     
+
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "webservice.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}   
+
+
+      - run: "pwd"
+      - run: "ls"
+     
 
 
       - name: Init Webservice Packer
