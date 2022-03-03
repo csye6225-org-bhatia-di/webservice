@@ -31,14 +31,15 @@ jobs:
   packer:
     runs-on: ubuntu-latest
     name: webservice-packer-ami-creation
-
+    needs: zipcreation
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - run: "pwd"
       - run: "ls"
-      
+
       - name: Init Webservice Packer
         uses: hashicorp/packer-github-actions@master
         with:
