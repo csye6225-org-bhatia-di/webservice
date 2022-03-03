@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Create webservice Folder
-        run: rsync -arv --exclude='node_modules/' . ./webservice
+        run: rsync -arv --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . ./webservice
       - name: Switch to webservice Folder
         run: |
           zip -r webservice.zip webservice
