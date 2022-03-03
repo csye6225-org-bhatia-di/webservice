@@ -10,7 +10,8 @@
     "db-reset": "npx sequelize-cli db:migrate:undo:all",
     "db:create": "sequelize-cli db:create",
     "db:makemigrations": "./node_modules/sequelize-auto-migrations/bin/makemigration.js",
-    "init": "npx sequelize init"
+    "init": "npx sequelize init",
+    "dev": "npx nodemon index.js"
 
   },
   "author": "Diksha Bhatia",
