@@ -5,6 +5,17 @@ on:
     branches: [ main ]
 
 jobs:
+  packer:
+    runs-on: ubuntu-latest
+    steps:
+       # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target:  packer/ami-create.pkr.hcl
+          
   build:
 
     runs-on: ubuntu-latest
