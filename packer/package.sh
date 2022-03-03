@@ -1,7 +1,6 @@
 #!/bin/bash
 sleep 30
 echo updating
-echo $AWS_ACCESS_KEY_ID
 sudo yum -y update
 echo installing zip
 sudo yum install -y zip unzip
@@ -16,6 +15,9 @@ curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 sudo yum install -y nodejs
 cd /tmp/
 unzip webservice.zip
+sleep 40
+echo "########## Unzipped #############"
+ls
 cd webservice
 sudo npm install bcrypt
 sudo npm install
