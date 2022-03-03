@@ -4,18 +4,8 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
-  packer:
-    runs-on: ubuntu-latest
-    steps:
-       # validate templates
-      - name: Validate Template
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: validate
-          arguments: -syntax-only
-          target:  packer/ami-create.pkr.hcl
-          
+jobs:     
+
   build:
 
     runs-on: ubuntu-latest
@@ -27,6 +17,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Validate Template
+      uses: hashicorp/packer-github-actions@master
+      with:
+          command: validate
+          arguments: -syntax-only
+          workingDir: packer
+          target:  ami-create.pkr.hcl
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -35,3 +34,4 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+      
