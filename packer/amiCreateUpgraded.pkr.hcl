@@ -78,7 +78,7 @@ build {
 
   provisioner "file" {
     destination = "/tmp/webservice.zip"
-    source      = "webservice.zip"
+    source      = "${var.zip_location}/webservice.zip"
   }
 
   provisioner "file" {
