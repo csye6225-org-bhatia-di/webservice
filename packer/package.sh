@@ -24,7 +24,6 @@ cd webservice
 ls -la
 echo "########## Unzipped #############"
 sleep 10
-sudo npm install bcrypt
 sudo npm install
 sudo npm install -g nodemon
 sudo npm run db-migrate
