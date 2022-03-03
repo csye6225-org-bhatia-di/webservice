@@ -19,12 +19,11 @@ sleep 30
 cd /tmp/
 echo "Inside tmp/"
 ls
+sudo mkdir webservice
+cd webservice
 unzip webservice.zip
 sleep 40
 echo "########## Unzipped #############"
-ls
-cd webservice
-sleep 30
 ls
 sleep 30
 sudo npm install bcrypt
