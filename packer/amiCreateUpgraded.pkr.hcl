@@ -68,6 +68,12 @@ source "amazon-ebs" "webservice" {
 
 build {
   sources = ["source.amazon-ebs.webservice"]
+  provisioner "shell" {
+    inline = [
+      "echo ${var.zip_location}"
+      "ls ${var.zip_location}/"
+    ]
+  }
 
   provisioner "file" {
     destination = "/tmp/webservice.zip"
