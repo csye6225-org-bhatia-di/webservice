@@ -20,8 +20,10 @@ cd /tmp/
 echo "Inside tmp/"
 ls
 sudo mkdir webservice
+sudo mv webservice.zip webservice
 cd webservice
 unzip webservice.zip
+sudo rm -rf webservice.zip
 sleep 40
 echo "########## Unzipped #############"
 ls
