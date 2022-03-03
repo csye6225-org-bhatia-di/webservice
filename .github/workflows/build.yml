@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - run: pwd
+    - run: ls
     
     - name: Validate Template
       uses: hashicorp/packer-github-actions@master
