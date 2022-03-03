@@ -50,7 +50,7 @@ source "amazon-ebs" "webservice" {
   secret_key   = "${var.aws_secret_key}"
   ami_description = "AMI for CSYE-6225"
   ami_name        = "webservice_ami_${local.timestamp}"
-  ami_users       = ["105634846355"]
+  ami_users       = ["105634846355", "406472615172"]
   instance_type   = "t2.micro"
   launch_block_device_mappings {
     delete_on_termination = true
