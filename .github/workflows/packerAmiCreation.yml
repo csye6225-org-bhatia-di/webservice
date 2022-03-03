@@ -13,7 +13,21 @@ env:
   AWS_DEFAULT_OUTPUT: json
 
 jobs:
-  
+
+  zipcreation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create webservice Folder
+        run: rsync -arv --exclude='.git/' --exclude='.github/' --exclude='node_modules/' --exclude='package-lock.json/' --exclude='.gitignore' . ./webservice
+      - name: Switch to webservice Folder
+        run: |
+          zip -r webservice.zip webservice
+      - uses: actions/upload-artifact@v1
+        with:
+          name: webservice.zip
+          path: ${{ github.workspace }}/webservice.zip
+
   packer:
     runs-on: ubuntu-latest
     name: webservice-packer-ami-creation
@@ -24,31 +38,7 @@ jobs:
 
       - run: "pwd"
       - run: "ls"
-
-
-      - name: Creating Zip file for packer to create ami
-        uses: papeloto/action-zip@v1
-        with:
-           files: authorization/ config/ controller/ migrations/ models/ packer/ routes/ test/ .sequelizerc index.js package.json             
-           recursive: false
-           dest: webservice.zip
-
-      -  
-        uses: actions/upload-artifact@v1
-        with:
-           name: webservice-artifact
-           path: ${{ github.workspace }}/webservice.zip
       
-
-      
-     
-
-
-      - run: "pwd"
-      - run: "ls"
-     
-
-
       - name: Init Webservice Packer
         uses: hashicorp/packer-github-actions@master
         with:
