@@ -18,16 +18,11 @@ ls
 sleep 30
 cd /tmp/
 echo "Inside tmp/"
-ls
-sudo mkdir webservice
-sudo chown -R ec2-user:ec2-user webservice
-sudo mv webservice.zip webservice
-cd webservice
+ls -la
 sudo unzip webservice.zip
-chown -R ec2-user:ec2-user webservice
-sudo rm -rf webservice.zip
+cd webservice
+ls -la
 echo "########## Unzipped #############"
-ls
 sleep 10
 sudo npm install bcrypt
 sudo npm install
