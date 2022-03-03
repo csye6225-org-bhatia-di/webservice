@@ -22,7 +22,8 @@ ls
 sudo mkdir webservice
 sudo mv webservice.zip webservice
 cd webservice
-unzip webservice.zip
+sudo unzip webservice.zip
+sleep 30
 sudo rm -rf webservice.zip
 sleep 40
 echo "########## Unzipped #############"
