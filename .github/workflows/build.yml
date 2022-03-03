@@ -24,9 +24,8 @@ jobs:
       uses: hashicorp/packer-github-actions@master
       with:
           command: validate
-          arguments: -syntax-only
-          workingDir: packer
-          target:  ami-create.pkr.hcl
+          arguments: -syntax-only          
+          target:  packer/amiCreateUpgraded.pkr.hcl
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
