@@ -7,6 +7,6 @@ const upload = multer({dest: 'imgUploads/'});
 router.post("/", UserController.createUser);
 router.put("/self", UserController.updateUser);
 router.get("/self", UserController.fetchUser);
-router.post("/self/pic", upload.single('UserImage'), UserController.uploadUserImage);
+router.post("/self/pic", upload.single('profilePic'), UserController.uploadUserImage);
 
 module.exports = router;

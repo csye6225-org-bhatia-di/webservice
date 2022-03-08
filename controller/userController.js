@@ -2,8 +2,8 @@ const uuidv4 = require('uuidv4');
 const bcrypt = require('bcrypt');
 const User = require('../models').user; // loads index.js
 const authorization = require('../authorization/authorize');
-const multer = require('multer');
-const upload = multer({dest: 'imgUploads/'});
+const s3Server = require('../aws/s3Server');
+
 
 exports.fetchUser = async (req, res) => {
 
@@ -143,11 +143,24 @@ exports.updateUser = async (req, res) => {
 
 exports.uploadUserImage = async (req, res) => {
 
-    console.log("######## Hitting user upload image #########");
+    console.log("######## Hitting user upload image #########");  
 
-    console.log(req.body);
+    const file = req.file;
+    console.log("Request to s3 Bucket")
+    console.log(file);
+    await s3Server.uploadImageToS3Bucket(file)
+    .then(data => {
+        console.log(data);
+        console.log("Saved to s3");
+    })
+    .catch(err => {
+        console.error("Save to s3 failed");
+        console.error(err.message);
+    });
+    
 
-    res.status(201).send({ message: "Uploaded user image! "});
+
+    res.status(201).send({ message: "Uploaded user image at path " + '$file.path'});
 
 };
 

@@ -35,3 +35,13 @@ B. \c DBNAME: move inside a database
 C. \dt DBNAME: show table in a database
 
 
+#Zip and copy file intp ec2 instance
+1. Goto pem direcotry
+2. scp -i assignment5.pem webservice.zip ec2-user@3.143.232.254:/tmp
+
+# Linux commands
+pwd current directory
+la -la list with permissions
+rm -rf dirName
+unlink filename
+
