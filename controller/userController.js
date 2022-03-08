@@ -2,6 +2,8 @@ const uuidv4 = require('uuidv4');
 const bcrypt = require('bcrypt');
 const User = require('../models').user; // loads index.js
 const authorization = require('../authorization/authorize');
+const multer = require('multer');
+const upload = multer({dest: 'imgUploads/'});
 
 exports.fetchUser = async (req, res) => {
 
@@ -137,6 +139,17 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+
+
+exports.uploadUserImage = async (req, res) => {
+
+    console.log("######## Hitting user upload image #########");
+
+    console.log(req.body);
+
+    res.status(201).send({ message: "Uploaded user image! "});
+
+};
 
 
 
