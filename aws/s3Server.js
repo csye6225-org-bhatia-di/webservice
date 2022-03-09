@@ -4,8 +4,8 @@ const fs = require("fs");
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION; 
-const accessKey = process.env.AWS_ACCESS_KEY_S3_USER;
-const secretKey = process.env.AWS_SECRET_KEY_S3_USER;
+const accessKey = process.env.AWS_ACCESS_KEY_ID;
+const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 const s3 = new S3({
 
@@ -20,7 +20,10 @@ exports.uploadImageToS3Bucket = (file) => {
     const uploadParams = {
         Bucket: bucketName,
         Body: fileStream,
-        Key: file.filename
+        Key: file.filename,
+        Metadata: {
+            
+        }
     };
 
     return s3.upload(uploadParams).promise();

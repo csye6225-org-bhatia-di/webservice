@@ -164,7 +164,7 @@ exports.uploadUserImage = async (req, res) => {
 
 };
 
-
+exports.getUserImage
 
 
 

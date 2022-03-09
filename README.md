@@ -44,4 +44,4 @@ pwd current directory
 la -la list with permissions
 rm -rf dirName
 unlink filename
-
+ps aux | grep node -> list all process
