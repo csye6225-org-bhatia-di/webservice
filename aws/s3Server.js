@@ -15,17 +15,57 @@ const s3 = new S3({
 
 });
 
-exports.uploadImageToS3Bucket = (file) => {
+exports.uploadImageToS3Bucket = async (currentImageKey, userid, file) => {
+    if (currentImageKey != null) {
+        const deleteParams = {
+            Key: currentImageKey,
+            Bucket: bucketName
+          };
+          console.log("################# deleting previous imagekey ##############");
+        
+          await s3.deleteObject(deleteParams).promise();
+    }
+    console.log("################# Uploading new  imagekey ##############");
+
+    console.log("file " , file);
     const fileStream = fs.createReadStream(file.path);
+
+
+
     const uploadParams = {
         Bucket: bucketName,
         Body: fileStream,
-        Key: file.filename,
+        Key: userid + "/" + file.filename,
         Metadata: {
-            
+            "file_name": file.originalname,
+            "upload_date": new Date().toISOString(),
+            "image_id": file.filename          
+
         }
     };
 
     return s3.upload(uploadParams).promise();
 
+};
+
+
+
+exports.fetchImageFromS3Bucket = (fileKey) => {
+    const downloadParams = {
+        Key: fileKey,
+        Bucket: bucketName
+      }
+    
+      return s3.getObject(downloadParams).promise();
+};
+
+
+
+exports.deleteImageFromS3Bucket = (fileKey) => {
+    const deleteParams = {
+        Key: fileKey,
+        Bucket: bucketName
+      }
+    
+      return s3.deleteObject(deleteParams).promise();
 };

@@ -5,7 +5,6 @@ const UserToImageMapping = require('../models').usertoimagemapping;
 const authorization = require('../authorization/authorize');
 const s3Server = require('../aws/s3Server');
 const multer = require('multer');
-const { use } = require('../routes/userRoute');
 const upload = multer({dest: 'imgUploads/'});
 
 exports.fetchUser = async (req, res) => {
@@ -145,77 +144,6 @@ exports.updateUser = async (req, res) => {
 
 
 
-//     console.log("######## Hitting user upload image #########");  
-
- 
-//     console.log("Request header ", req.header);
-//     console.log("Request Info", req.file); 
-//     console.log("Request Info", req.files); 
-
-//     console.log("Request Info", req.body); 
-//     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-//     console.log("Auth response received");
-
-//     if(userObject != null) {
-        
-
-//         console.log("Successful Authorization");
-//         let userInfo = userObject.toJSON();
-//         const file = req.body.file;
-//         console.log("Request to s3 Bucket");
-//         console.log(req.file.path);
-
-//         // uploading to s3
-//         await s3Server.uploadImageToS3Bucket(file)
-//         .then(data => {
-//             console.log("#### response from s3  ####");
-//             console.log(data);
-
-//             const currentUserToImageMapping = UserToImageMapping.findOne({ where: {
-//                 userID: userInfo.id
-//             }});
-
-//             if(currentUserToImageMapping != null) {
-//                 currentUserToImageMapping.imageKey = data.Key;
-//                 currentUserToImageMapping.save();
-
-//             } else {
-
-//                 const newUserToImageMapping = {
-//                     id: uuidv4.uuid(),
-//                     userID: userInfo.id,
-//                     imageKey: data.Key
-//                 };
-
-//                 console.log("Saving image object ", newUserToImageMapping);
-//                 UserToImageMapping.create(newUserToImageMapping)
-//                 .then(newMapping => {
-//                     console.log("Record saved! " + newMapping);
-//                 }).catch((err) => {
-//                     console.err("Encountered error " + err.message);
-//                 });
-
-//             }
-//             console.log("Saved to s3");
-//         })
-//         .catch(err => {
-//             console.error("Save to s3 failed");
-//             console.error(err.message);
-//         });    
-
-
-//         res.status(201).send({ message: "Uploaded user image at path " + '$file.path'});
-        
-
-//     } else {
-//         res.status(400).send({
-//             message: "Invalid credentials"
-//         });
-//     }   
-
-// };
-
-
 
 exports.uploadUserImage = async (req, res) => {
 
@@ -236,7 +164,13 @@ exports.uploadUserImage = async (req, res) => {
         console.log("Successful Atuh");
         let userInfo = userObject;
         let s3Response = {}
-        await s3Server.uploadImageToS3Bucket(req.file)
+        const userImageMappingObject = await UserToImageMapping.findOne({where: {
+            userID: userInfo.id
+        }});
+        const currentImageKey = userImageMappingObject !== null ? userImageMappingObject.imageKey : null;
+
+
+        await s3Server.uploadImageToS3Bucket(currentImageKey, userInfo.id, req.file)
         .then(data => {
             console.log("#### response from s3  ####");
             console.log(data);
@@ -246,9 +180,15 @@ exports.uploadUserImage = async (req, res) => {
             console.error("Save to s3 failed");
             console.error(err.message);
             res.status(400).send({"message": "Failed to save image to s3"});
-        });            
+        });      
+        
+        if (Object.keys(s3Response).length >= 1) {
+            await updateUserToImageMapping(req.file, userInfo, s3Response, res);     
+        } else {
+            res.status(400).send({"message": "not well"});
+        }
 
-        await updateUserToImageMapping(userInfo, s3Response, res);      
+         
 
     } else {
         res.status(500).send({"message": "Internal server errr"});
@@ -261,34 +201,146 @@ exports.uploadUserImage = async (req, res) => {
 };
 
 
-async function updateUserToImageMapping (userInfo, s3Response, res) {
+exports.fetchUserImage = async (req, res) => {
+
+    const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
+    console.log("Auth response received");
+
+    if(userObject !== null) {
+
+        console.log("Successful Atuh");
+        let userInfo = userObject;
+        const userImageMappingObject = await UserToImageMapping.findOne({where: {
+            userID: userInfo.id
+        }});
+
+
+        let s3Response = {}
+        await s3Server.fetchImageFromS3Bucket(userImageMappingObject.imageKey)
+        .then(data => {
+            console.log("#### response from s3  ####");
+            console.log(data);
+            s3Response = data; 
+            res.status(200).send({
+                "file_name": s3Response.Metadata.file_name,
+                "id": s3Response.Metadata.image_id,
+                "url": userImageMappingObject.imageUrl,
+                "upload_date": s3Response.upload_date,
+                "user_id": userInfo.id
+            });          
+        })
+        .catch(err => {
+            console.error("Fetch to s3 failed");
+            console.error(err.message);
+            res.status(400).send({"message": "Failed to fetch image to s3"});
+        });      
+        
+     
+
+         
+
+    } else {
+        res.status(500).send({"message": "Internal server errr"});
+        
+    }
+
+
+
+
+
+};
+
+exports.deleteUserImage = async (req, res) => {
+
+    const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
+    console.log("Auth response received");
+
+    if(userObject !== null) {
+
+        console.log("Successful Atuh");
+        let userInfo = userObject;
+        const userImageMappingObject = await UserToImageMapping.findOne({where: {
+            userID: userInfo.id
+        }});
+        
+
+
+        let s3Response = {};
+        await s3Server.deleteImageFromS3Bucket(userImageMappingObject.imageKey)
+        .then(data => {
+            console.log("#### response for delete from s3  ####");
+            console.log(data);
+            s3Response = data; 
+            userImageMappingObject.destroy();
+            res.status(204).send();        
+        })
+        .catch(err => {
+            console.error("Fetch to s3 failed");
+            console.error(err.message);
+            res.status(400).send({"message": "Failed to fetch image to s3"});
+        });      
+        
+     
+
+         
+
+    } else {
+        res.status(500).send({"message": "Internal server errr"});
+        
+    }
+
+
+};
+
+
+
+async function updateUserToImageMapping (file, userInfo, s3Response, res) {
 
     const currentUserToImageMapping = await UserToImageMapping.findOne({ where: {
         userID: userInfo.id
     }});
+    console.log(currentUserToImageMapping);
 
     if(currentUserToImageMapping !== null) {
+        console.log(s3Response);
         currentUserToImageMapping.imageKey = s3Response.Key;
-        currentUserToImageMapping.save().then((data) => {
-            res.status(200).send({"message": "changa"});
-        }).catch((err) => {
-            console.error("Encountered error " + err.message);
-            res.status(400).send({"message": "not changa"});
+        currentUserToImageMapping.imageUrl = s3Response.Location;
+        await currentUserToImageMapping.save();
+        res.status(200).send({
+            "file_name": file.originalname,
+            "upload_date": new Date().toISOString(),
+            "image_id": file.filename,
+            "url": s3Response.Location,
+             "user_id": userInfo.id  
+
+
         });
+        
         
     } else {
 
         const newUserToImageMapping = {
             id: uuidv4.uuid(),
             userID: userInfo.id,
-            imageKey: s3Response.Key
+            imageKey: s3Response.Key,
+            imageUrl: s3Response.Location
         };
 
         console.log("Saving image object ", newUserToImageMapping);
         UserToImageMapping.create(newUserToImageMapping)
         .then(newMapping => {
             console.log("Record saved! " + newMapping);
-            res.status(200).send({"message": "changa"});
+            res.status(200).send(
+                {
+                    "file_name": file.originalname,
+                    "upload_date": new Date().toISOString(),
+                    "image_id": file.filename,
+                    "url": s3Response.Location,
+                    "user_id": userInfo.id  
+
+
+                }
+            );
         }).catch((err) => {
             console.error("Encountered error " + err.message);
             res.status(400).send({"message": "not changa"});
