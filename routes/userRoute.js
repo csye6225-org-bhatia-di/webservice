@@ -8,6 +8,5 @@ router.post("/", UserController.createUser);
 router.put("/self", UserController.updateUser);
 router.get("/self", UserController.fetchUser);
 router.post("/self/pic", upload.single('profilePic'), UserController.uploadUserImage);
-router.post("/self/pic", UserController.uploadUserImage);
 
 module.exports = router;

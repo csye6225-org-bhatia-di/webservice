@@ -4,9 +4,8 @@ module.exports = {
     await queryInterface.createTable('usertoimagemapping', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       userID: {
         type: Sequelize.UUID,

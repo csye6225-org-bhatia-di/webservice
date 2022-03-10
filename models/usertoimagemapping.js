@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model, Sequelize } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class UserToImageMapping extends Model {
     /**
@@ -14,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   UserToImageMapping.init({
+    id: {
+      type: Sequelize.UUID,
+      allowNull: false,
+      primaryKey: true,
+      unique: true,
+  },
     userID: {
       type: Sequelize.UUID,
       allowNull: false
