@@ -225,7 +225,7 @@ exports.fetchUserImage = async (req, res) => {
                 "file_name": s3Response.Metadata.file_name,
                 "id": s3Response.Metadata.image_id,
                 "url": userImageMappingObject.imageUrl,
-                "upload_date": s3Response.upload_date,
+                "upload_date": s3Response.Metadata.upload_date,
                 "user_id": userInfo.id
             });          
         })
