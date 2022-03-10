@@ -2,6 +2,7 @@
 Description: Webservice with nodejs , Postgres , Sequelize ORM & Github actions
 
 # Assumption: GitHub SSH Keys are set up on your user account
+# Added update
 
 # Installations
 1. Install VSCode. Go to the link -> https://code.visualstudio.com/download
