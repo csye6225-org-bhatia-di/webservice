@@ -38,7 +38,7 @@ exports.uploadImageToS3Bucket = async (currentImageKey, userid, file) => {
         Key: userid + "/" + file.filename,
         Metadata: {
             "file_name": file.originalname,
-            "upload_date": new Date().toISOString(),
+            "upload_date": new Date().toISOString().split("T")[0],
             "image_id": file.filename          
 
         }

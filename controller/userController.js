@@ -147,7 +147,13 @@ exports.updateUser = async (req, res) => {
 
 exports.uploadUserImage = async (req, res) => {
 
-    console.log("######## Hitting user upload image #########");  
+    console.log("######## Hitting user upload image #########"); 
+    const fileExt = req.file.originalname.toUpperCase(); 
+    const checker = fileExt.endsWith("JPEG") || fileExt.endsWith("PNG") || fileExt.endsWith("JPG");
+    if (!checker) {
+       res.status(400).send({"message": "Unsupported types"});
+       return;
+    } 
 
 
     // beginn authenticatoon
@@ -213,6 +219,10 @@ exports.fetchUserImage = async (req, res) => {
         const userImageMappingObject = await UserToImageMapping.findOne({where: {
             userID: userInfo.id
         }});
+        if(userImageMappingObject === null) {
+            res.status(404).send({message: "Not found"});
+            return;
+        }
 
 
         let s3Response = {}
@@ -225,7 +235,7 @@ exports.fetchUserImage = async (req, res) => {
                 "file_name": s3Response.Metadata.file_name,
                 "id": s3Response.Metadata.image_id,
                 "url": userImageMappingObject.imageUrl,
-                "upload_date": s3Response.upload_date,
+                "upload_date": s3Response.Metadata.upload_date,
                 "user_id": userInfo.id
             });          
         })
@@ -263,22 +273,31 @@ exports.deleteUserImage = async (req, res) => {
             userID: userInfo.id
         }});
         
+        if(userImageMappingObject === null) {
+            res.status(404).send({message: "Not found"});
+
+        } else {
+            let s3Response = {};
+            await s3Server.deleteImageFromS3Bucket(userImageMappingObject.imageKey)
+            .then(data => {
+                console.log("#### response for delete from s3  ####");
+                console.log(data);
+                s3Response = data; 
+                userImageMappingObject.destroy();
+                res.status(204).send();        
+            })
+            .catch(err => {
+                console.error("Fetch to s3 failed");
+                console.error(err.message);
+                res.status(400).send({"message": "Failed to fetch image to s3"});
+            });      
 
 
-        let s3Response = {};
-        await s3Server.deleteImageFromS3Bucket(userImageMappingObject.imageKey)
-        .then(data => {
-            console.log("#### response for delete from s3  ####");
-            console.log(data);
-            s3Response = data; 
-            userImageMappingObject.destroy();
-            res.status(204).send();        
-        })
-        .catch(err => {
-            console.error("Fetch to s3 failed");
-            console.error(err.message);
-            res.status(400).send({"message": "Failed to fetch image to s3"});
-        });      
+
+        }
+
+
+       
         
      
 
@@ -308,8 +327,8 @@ async function updateUserToImageMapping (file, userInfo, s3Response, res) {
         await currentUserToImageMapping.save();
         res.status(200).send({
             "file_name": file.originalname,
-            "upload_date": new Date().toISOString(),
-            "image_id": file.filename,
+            "upload_date": new Date().toISOString().split("T")[0],
+            "id": file.filename,
             "url": s3Response.Location,
              "user_id": userInfo.id  
 
@@ -333,8 +352,8 @@ async function updateUserToImageMapping (file, userInfo, s3Response, res) {
             res.status(200).send(
                 {
                     "file_name": file.originalname,
-                    "upload_date": new Date().toISOString(),
-                    "image_id": file.filename,
+                    "upload_date": new Date().toISOString().split("T")[0],
+                    "id": file.filename,
                     "url": s3Response.Location,
                     "user_id": userInfo.id  
 
