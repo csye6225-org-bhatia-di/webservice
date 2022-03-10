@@ -66,8 +66,7 @@ source "amazon-ebs" "webservice" {
   vpc_id       = "${var.vpc_id}"
 }
 
-build {
-  sources = ["source.amazon-ebs.webservice"]
+build  sources = ["source.amazon-ebs.webservice"]
   provisioner "shell" {
     inline = [
       "echo ################# Starting provisioners ############################",
