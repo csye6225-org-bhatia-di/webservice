@@ -12,7 +12,11 @@ module.exports = {
         allowNull: false
      },
       imageKey: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      imageUrl: {
+        type: Sequelize.STRING,
         allowNull: false
       },
       created_at: {
