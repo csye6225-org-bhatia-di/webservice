@@ -25,7 +25,7 @@ Description: Webservice with nodejs , Postgres , Sequelize ORM & Github actions
 18. Run command npm run db-reset to undo all migrations
 19. In order to run the test cases, run command npm test
 
-# POSTGRESQL Commands
+# POSTGRESQL Commands in depth
 
 
 A. \l : list all database 

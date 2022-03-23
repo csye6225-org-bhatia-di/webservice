@@ -25,7 +25,6 @@ sleep 10
 sudo npm install
 sudo npm install bcrypt
 sudo npm install -g nodemon
-sudo npm run db-migrate
 sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
 sudo systemctl enable webservice.service
 sudo systemctl start webservice.service

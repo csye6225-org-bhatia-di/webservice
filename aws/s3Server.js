@@ -9,10 +9,7 @@ const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 const s3 = new S3({
 
-    region,
-    accessKey,
-    secretKey
-
+    region
 });
 
 exports.uploadImageToS3Bucket = async (currentImageKey, userid, file) => {
@@ -38,7 +35,7 @@ exports.uploadImageToS3Bucket = async (currentImageKey, userid, file) => {
         Key: userid + "/" + file.filename,
         Metadata: {
             "file_name": file.originalname,
-            "upload_date": new Date().toISOString(),
+            "upload_date": new Date().toISOString().split("T")[0],
             "image_id": file.filename          
 
         }
