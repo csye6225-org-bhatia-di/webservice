@@ -41,6 +41,10 @@ variable "zip_location" {
   type= string
   default = env("GITHUB_WORKSPACE")
 }
+variable "aws_code_deploy_bucket" {
+  type= string
+  default = env("AWS_CODE_DEPLOY_BUCKET_NAME")
+}
 
 locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 
@@ -81,10 +85,11 @@ build {
     destination = "/tmp/webservice.zip"
   }
 
-  provisioner "file" {
-    destination = "/tmp/pgdg.repo"
-    source      = "packer/pgdg.repo"
+	provisioner "file" {
+	    destination = "/tmp/pgdg.repo"
+	    source      = "packer/pgdg.repo"
   }
+  
 
   provisioner "file" {
     destination = "/tmp/webservice.service"
@@ -92,6 +97,10 @@ build {
   }
 
   provisioner "shell" {
+    environment_vars = [
+    "aws_code_deploy_bucket_name=${var.aws_code_deploy_bucket}"
+    "aws_region=${var.aws_region}"
+  ]
     scripts = ["packer/package.sh"]
   }
 
