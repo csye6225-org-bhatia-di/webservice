@@ -98,7 +98,7 @@ build {
 
   provisioner "shell" {
     environment_vars = [
-    "aws_code_deploy_bucket_name=${var.aws_code_deploy_bucket}"
+    "aws_code_deploy_bucket_name=${var.aws_code_deploy_bucket}",
     "aws_region=${var.aws_region}"
   ]
     scripts = ["packer/package.sh"]
