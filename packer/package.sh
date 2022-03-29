@@ -21,7 +21,7 @@ echo $aws_code_deploy_bucket_name
 echo "#### aws code region ####"
 echo $aws_region
 wget https://$aws_code_deploy_bucket_name.s3.$aws_region.amazonaws.com/latest/install
-echo "########## Unzip begins #############"
+echo "########### Unzip begins #############"
 ls
 sleep 30
 cd /tmp/
