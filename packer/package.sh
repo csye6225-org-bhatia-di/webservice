@@ -21,6 +21,10 @@ echo $aws_code_deploy_bucket_name
 echo "#### aws code region ####"
 echo $aws_region
 wget https://$aws_code_deploy_bucket_name.s3.$aws_region.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+sudo service codedeploy-agent start
+sudo service codedeploy-agent status
 echo "########### Unzip begins #############"
 ls
 sleep 30
