@@ -38,6 +38,31 @@ jobs:
           cd ..
           pwd 
           ls -la
+
+      - name: Viewing the zip
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{env.WEB_SERVER_ARTIFACT_NAME}}
+          path: ${{ github.workspace }}/${{env.WEB_SERVER_ARTIFACT_NAME}}
+    
+      - name: Configuring AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_ACTION_USER_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACTION_USER_ACCESS_KEY}}
+          aws-region: ${{env.AWS_DEFAULT_REGION}}
+
+      - name: Copy zip file to s3
+        run: |
+          echo "Current Directory"
+          pwd
+          ls -la
+          echo "Moving codedeploy_artifact/ to s3"
+          aws ec2 describe-instances
+
+      - name: Code Deploy Call to upload zip     
+
+
           
 
     
