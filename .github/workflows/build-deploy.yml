@@ -10,9 +10,7 @@ env:
   CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME: webserver-code-deploy
 
 on:
-  push:
-    tags:
-      - '*'
+  pull_request:
     branches: [ temp_main ]
 
 jobs:    
@@ -30,9 +28,9 @@ jobs:
           ls -al          
           mkdir codedeploy_artifact
           zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice codedeploy/*.sh appspec.yml 
-          pwd 
-          cd codedeploy_artifact
+          pwd           
           mv ${{env.WEB_SERVER_ARTIFACT_NAME}} codedeploy_artifact/
+          cd codedeploy_artifact
           pwd 
           echo "Inside artifact"
           ls -la
