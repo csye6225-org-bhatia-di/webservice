@@ -32,6 +32,7 @@ jobs:
           zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice codedeploy/*.sh appspec.yml 
           pwd 
           cd codedeploy_artifact
+          mv ${{env.WEB_SERVER_ARTIFACT_NAME}} codedeploy_artifact/
           pwd 
           echo "Inside artifact"
           ls -la
