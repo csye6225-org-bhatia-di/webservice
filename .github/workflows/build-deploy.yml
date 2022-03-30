@@ -6,23 +6,39 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_DEFAULT_OUTPUT: json
   WEB_SERVER_ARTIFACT_NAME: csye6225-webserver-${{ github.sha }}.zip
- 
+  CODE_DEPLOY_APPLICATION_NAME: webserver-code-deploy
+  CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME: webserver-code-deploy
 
 on:
-  pull_request:
+  push:
+    tags:
+      - '*'
     branches: [ temp_main ]
 
 jobs:    
   build_and_deploy:
     runs-on: ubuntu-latest   
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v1
       - name: Building the Artifact zip file 
         run: |
           echo "Building Zip with name - ${{env.WEB_SERVER_ARTIFACT_NAME}}"
           echo "## Current Working directory ##"
           pwd
+          rsync -arv --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . ./webservice
           echo "## Listing all contents ##"
-          ls -al
+          ls -al          
+          mkdir codedeploy_artifact
+          zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice codedeploy/*.sh appspec.yml 
+          pwd 
+          cd codedeploy_artifact
+          pwd 
+          echo "Inside artifact"
+          ls -la
+          echo "Moving up"
+          cd ..
+          pwd 
+          ls -la
+          
 
     
