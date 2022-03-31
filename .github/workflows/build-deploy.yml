@@ -61,7 +61,22 @@ jobs:
           echo "Moving codedeploy_artifact/ to s3"
           aws s3 sync ./codedeploy_artifact s3://${{env.CODE_DEPLOY_BUCKET_NAME}}
 
+      - name: Codeploy API call to pick the latest s3 zip file and upload changes
+        run: |
+          output=$(aws deploy create-deployment \
+          --application-name ${{env.CODE_DEPLOY_APPLICATION_NAME}} \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name ${{env.CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME}} \
+          --description "CSYE deployment" \
+          --s3-location-bucket=${{env.CODE_DEPLOY_BUCKET_NAME}}, key=$${{env.WEB_SERVER_ARTIFACT_NAME}}, bundleType=zip \
+          --region ${{env.AWS_DEFAULT_REGION}}
+          --output json)
+
+          echo $output
           
+          dId=$(echo $output | jq -r '.deploymentId')
+          aws deploy wait deployment-successful --deployment-id $dId
+    
 
 
           
