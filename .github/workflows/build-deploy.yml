@@ -6,8 +6,9 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_DEFAULT_OUTPUT: json
   WEB_SERVER_ARTIFACT_NAME: csye6225-webserver-${{ github.sha }}.zip
-  CODE_DEPLOY_APPLICATION_NAME: webserver-code-deploy
-  CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME: webserver-code-deploy
+  CODE_DEPLOY_APPLICATION_NAME: csye6225-webapp
+  CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME: csye6225-webapp-deployment
+  CODE_DEPLOY_BUCKET_NAME: webservice-code-deploy-bucket
 
 on:
   pull_request:
@@ -58,9 +59,9 @@ jobs:
           pwd
           ls -la
           echo "Moving codedeploy_artifact/ to s3"
-          aws ec2 describe-instances
+          aws s3 sync ./codedeploy_artifact s3://${{env.CODE_DEPLOY_BUCKET_NAME}}
 
-      - name: Code Deploy Call to upload zip     
+          
 
 
           
