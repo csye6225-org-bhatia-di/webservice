@@ -68,7 +68,7 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{env.CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME}} \
           --description "CSYE deployment" \
-          --s3-location-bucket=${{env.CODE_DEPLOY_BUCKET_NAME}}, key=${{env.WEB_SERVER_ARTIFACT_NAME}}, bundleType=zip \
+          --s3-location bucket=${{env.CODE_DEPLOY_BUCKET_NAME}}, key=${{env.WEB_SERVER_ARTIFACT_NAME}}, bundleType=zip \
           --region ${{env.AWS_DEFAULT_REGION}}
           --output json)
 
