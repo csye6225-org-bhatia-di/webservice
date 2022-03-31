@@ -33,7 +33,7 @@ jobs:
           mv ${{env.WEB_SERVER_ARTIFACT_NAME}} codedeploy_artifact/
           cd codedeploy_artifact
           pwd 
-          echo "Inside artifact"
+          echo "Inside artifact ##"
           ls -la
           echo "Moving up ##"
           cd ..
