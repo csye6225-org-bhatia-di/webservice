@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: ${{env.WEB_SERVER_ARTIFACT_NAME}}
-          path: ${{ github.workspace }}/${{env.WEB_SERVER_ARTIFACT_NAME}}
+          path: ${{ github.workspace }}/codedeploy_artifact/${{env.WEB_SERVER_ARTIFACT_NAME}}
     
       - name: Configuring AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
