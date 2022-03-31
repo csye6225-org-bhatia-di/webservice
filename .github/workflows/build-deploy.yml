@@ -35,7 +35,7 @@ jobs:
           pwd 
           echo "Inside artifact"
           ls -la
-          echo "Moving up"
+          echo "Moving up ##"
           cd ..
           pwd 
           ls -la
