@@ -1,52 +1,52 @@
-# name: AMI Creation with Packer
+name: AMI Creation with Packer
 
-# on:
-#   push:
-#     tags:
-#       - '*'
-#     branches: [ temp_main ]
+on:
+  push:
+    tags:
+      - '*'
+    branches: [ main ]
 
-# env:
-#   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
-#   AWS_DEFAULT_REGION: us-east-1
-#   AWS_DEFAULT_OUTPUT: json
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_DEFAULT_OUTPUT: json
 
-# jobs:
+jobs:
 
-#   zipcreation:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v1
-#       - name: Create webservice Folder
-#         run: rsync -arv --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . ./webservice
-#       - name: Switch to webservice Folder
-#         run: |
-#           zip -r webservice.zip webservice
-#       - uses: actions/upload-artifact@v1
-#         with:
-#           name: webservice.zip
-#           path: ${{ github.workspace }}/webservice.zip
+  zipcreation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create webservice Folder
+        run: rsync -arv --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . ./webservice
+      - name: Switch to webservice Folder
+        run: |
+          zip -r webservice.zip webservice
+      - uses: actions/upload-artifact@v1
+        with:
+          name: webservice.zip
+          path: ${{ github.workspace }}/webservice.zip
 
-#   packer:
-#     runs-on: ubuntu-latest
-#     needs: zipcreation
-#     steps:  
-#       - uses: actions/checkout@v2
-#       - uses: actions/download-artifact@v2
-#         with: 
-#          name: webservice.zip
-#       - name: Display structure of downloaded files
-#         run: ls -d $PWD/*
-#       # Runs a single command using the runners shell
-#       - name: Build AMI with Packer
-#         uses: ExitoLab/packer_build_action_aws@v0.2.10
-#         with:
-#           templateFile: "packer/amiCreateUpgraded.pkr.hcl"
-#           workingDir: '.' 
-#         env:
-#           AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}   
-#           AWS_CODE_DEPLOY_BUCKET_NAME: ${{ secrets.AWS_CODE_DEPLOY_BUCKET_NAME }} 
+  packer:
+    runs-on: ubuntu-latest
+    needs: zipcreation
+    steps:  
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with: 
+         name: webservice.zip
+      - name: Display structure of downloaded files
+        run: ls -d $PWD/*
+      # Runs a single command using the runners shell
+      - name: Build AMI with Packer
+        uses: ExitoLab/packer_build_action_aws@v0.2.10
+        with:
+          templateFile: "packer/amiCreateUpgraded.pkr.hcl"
+          workingDir: '.' 
+        env:
+          AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}   
+          AWS_CODE_DEPLOY_BUCKET_NAME: ${{ secrets.AWS_CODE_DEPLOY_BUCKET_NAME }} 
 
       

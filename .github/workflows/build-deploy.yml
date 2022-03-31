@@ -11,8 +11,10 @@ env:
   CODE_DEPLOY_BUCKET_NAME: webservice-code-deploy-bucket
 
 on:
-  pull_request:
-    branches: [ temp_main ]
+  push:
+    tags:
+      - '*'
+    branches: [ main ]
 
 jobs:    
   build_and_deploy:
