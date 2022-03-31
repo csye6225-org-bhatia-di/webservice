@@ -20,8 +20,9 @@ echo "#### aws code deploy bucket name ####"
 echo $aws_code_deploy_bucket_name
 echo "#### aws code region ####"
 echo $aws_region
-wget https://webservice-code-deploy-bucket.s3.us-east-1.amazonaws.com/latest/install
-echo "# installing code deploy ageny"
+wget  https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+echo "# installing code deploy agent"
+ls -la
 chmod +x ./install
 sudo ./install auto
 sleep 30
