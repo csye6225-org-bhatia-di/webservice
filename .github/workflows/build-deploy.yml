@@ -1,0 +1,86 @@
+name: Build and Deploy Web server application
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_DEFAULT_OUTPUT: json
+  WEB_SERVER_ARTIFACT_NAME: csye6225-webserver-${{ github.sha }}.zip
+  CODE_DEPLOY_APPLICATION_NAME: csye6225-webapp
+  CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME: csye6225-webapp-deployment
+  CODE_DEPLOY_BUCKET_NAME: webservice-code-deploy-bucket
+
+on:
+  push:
+    tags:
+      - '*'
+    branches: [ main ]
+
+jobs:    
+  build_and_deploy:
+    runs-on: ubuntu-latest   
+    steps:
+      - uses: actions/checkout@v1
+      - name: Building the Artifact zip file 
+        run: |
+          echo "Building Zip with name - ${{env.WEB_SERVER_ARTIFACT_NAME}}"
+          echo "## Current Working directory ##"
+          pwd
+          rsync -arv --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . ./webservice
+          echo "## Listing all contents ##"
+          ls -al          
+          mkdir codedeploy_artifact
+          zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice codedeploy/*.sh appspec.yml 
+          pwd           
+          mv ${{env.WEB_SERVER_ARTIFACT_NAME}} codedeploy_artifact/
+          cd codedeploy_artifact
+          pwd 
+          echo "Inside artifact ##"
+          ls -la
+          echo "Moving up ##"
+          cd ..
+          pwd 
+          ls -la
+
+      - name: Viewing the zip
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{env.WEB_SERVER_ARTIFACT_NAME}}
+          path: ${{ github.workspace }}/codedeploy_artifact/${{env.WEB_SERVER_ARTIFACT_NAME}}
+    
+      - name: Configuring AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_ACTION_USER_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACTION_USER_ACCESS_KEY}}
+          aws-region: ${{env.AWS_DEFAULT_REGION}}
+
+      - name: Copy zip file to s3
+        run: |
+          echo "Current Directory"
+          pwd
+          ls -la
+          echo "Moving codedeploy_artifact/ to s3"
+          aws s3 sync ./codedeploy_artifact s3://${{env.CODE_DEPLOY_BUCKET_NAME}}
+
+      - name: Codeploy API call to pick the latest s3 zip file and upload changes
+        run: |
+          output=$(aws deploy create-deployment \
+          --application-name ${{env.CODE_DEPLOY_APPLICATION_NAME}} \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name ${{env.CODE_DEPLOY_DEPLOYNMENT_GROUP_NAME}} \
+          --description "CSYE deployment" \
+          --s3-location bucket=${{env.CODE_DEPLOY_BUCKET_NAME}},key=${{env.WEB_SERVER_ARTIFACT_NAME}},bundleType=zip \
+          --region ${{env.AWS_DEFAULT_REGION}} \
+          --output json)
+
+          echo $output
+          
+          dId=$(echo $output | jq -r '.deploymentId')
+          aws deploy wait deployment-successful --deployment-id $dId
+    
+
+
+          
+
+    
