@@ -39,7 +39,7 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -d $PWD/*
       # Runs a single command using the runners shell
-      - name: Build AMI with Packer
+      - name: Build AMI with Packer and Install Code Deploy Agent
         uses: ExitoLab/packer_build_action_aws@v0.2.10
         with:
           templateFile: "packer/amiCreateUpgraded.pkr.hcl"
