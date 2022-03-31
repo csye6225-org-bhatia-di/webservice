@@ -30,6 +30,12 @@ sudo service codedeploy-agent start
 sudo service codedeploy-agent status
 echo "codedeploy agent status completed"
 echo "########## Unzip begins #############"
+wget https://$aws_code_deploy_bucket_name.s3.$aws_region.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+sudo service codedeploy-agent start
+sudo service codedeploy-agent status
+echo "########### Unzip begins #############"
 ls
 sleep 30
 cd /tmp/
