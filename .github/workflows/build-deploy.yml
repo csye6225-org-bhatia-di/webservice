@@ -28,7 +28,7 @@ jobs:
           echo "## Listing all contents ##"
           ls -al          
           mkdir codedeploy_artifact
-          zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice codedeploy/*.sh appspec.yml 
+          zip -r ${{env.WEB_SERVER_ARTIFACT_NAME}} webservice/* codedeploy/*.sh appspec.yml 
           pwd           
           mv ${{env.WEB_SERVER_ARTIFACT_NAME}} codedeploy_artifact/
           cd codedeploy_artifact

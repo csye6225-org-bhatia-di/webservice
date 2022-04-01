@@ -30,12 +30,6 @@ sudo service codedeploy-agent start
 sudo service codedeploy-agent status
 echo "codedeploy agent status completed"
 echo "########## Unzip begins #############"
-wget  https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
-chmod +x ./install
-sudo ./install auto
-sudo service codedeploy-agent start
-sudo service codedeploy-agent status
-echo "########### Unzip begins #############"
 ls
 sleep 30
 cd /tmp/
@@ -51,6 +45,6 @@ sleep 10
 sudo npm install
 sudo npm install bcrypt
 sudo npm install -g nodemon
-sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
+sudo mv /tmp/packer/webservice.service /etc/systemd/system/webservice.service
 sudo systemctl enable webservice.service
 sudo systemctl start webservice.service
