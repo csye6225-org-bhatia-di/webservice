@@ -6,19 +6,23 @@ const authorization = require('../authorization/authorize');
 const s3Server = require('../aws/s3Server');
 const multer = require('multer');
 const upload = multer({dest: 'imgUploads/'});
+const SDC = require('statsd-client');
+const logger = require('../config/logger');
+const sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.fetchUser = async (req, res) => {
 
     console.log("Fetch  User Controller Started");
     console.log("Request Info", req.body);
-    
+    sdc.increment('endpoint.user.http.get');
+
 
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-    console.log("Auth response received");
+    logger.info("Auth response received");
 
     if(userObject != null){
 
-        console.log("Successful Authorization");
+        logger.info("Successful Authorization");
 
         let temp = userObject.toJSON();
         delete temp.password;
@@ -33,6 +37,7 @@ exports.fetchUser = async (req, res) => {
 
 
 exports.createUser = async (req, res) => {
+    sdc.increment('endpoint.user.http.post');
 
     console.log("Create User Controller Started");
     console.log("Request Info", req.body);
@@ -45,7 +50,7 @@ exports.createUser = async (req, res) => {
 
 
             const isUserNamePresent = await User.findOne({ where: {username: username}});
-            console.log(" user found ");
+            logger.info(" user found ");
             
 
             if(isUserNamePresent != null) {
@@ -101,6 +106,7 @@ exports.createUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+    sdc.increment('endpoint.user.http.put');
 
     console.log("Update User Controller Started");
     console.log("Request Info", req.body);
@@ -110,7 +116,7 @@ exports.updateUser = async (req, res) => {
 
     if(fetchUser !== null){
 
-        console.log("Successful Authorization");
+        logger.info("Successful Authorization");
 
         if(!req.body.password && !req.body.first_name && !req.body.last_name){
     
@@ -146,7 +152,7 @@ exports.updateUser = async (req, res) => {
 
 
 exports.uploadUserImage = async (req, res) => {
-
+    sdc.increment('endpoint.user.http.post.profilePic');
     console.log("######## Hitting user upload image #########"); 
     const fileExt = req.file.originalname.toUpperCase(); 
     const checker = fileExt.endsWith("JPEG") || fileExt.endsWith("PNG") || fileExt.endsWith("JPG");
@@ -163,11 +169,11 @@ exports.uploadUserImage = async (req, res) => {
 
 
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-    console.log("Auth response received");
+    logger.info("Auth response received");
 
     if(userObject !== null) {
 
-        console.log("Successful Atuh");
+        logger.info("Successful Atuh");
         let userInfo = userObject;
         let s3Response = {}
         const userImageMappingObject = await UserToImageMapping.findOne({where: {
@@ -183,8 +189,8 @@ exports.uploadUserImage = async (req, res) => {
             s3Response = data;           
         })
         .catch(err => {
-            console.error("Save to s3 failed");
-            console.error(err.message);
+            logger.info("Save to s3 failed");
+            logger.info(err.message);
             res.status(400).send({"message": "Failed to save image to s3"});
         });      
         
@@ -197,6 +203,7 @@ exports.uploadUserImage = async (req, res) => {
          
 
     } else {
+        logger.info("Internal server error");
         res.status(500).send({"message": "Internal server errr"});
         
     }
@@ -208,7 +215,7 @@ exports.uploadUserImage = async (req, res) => {
 
 
 exports.fetchUserImage = async (req, res) => {
-
+    sdc.increment('endpoint.user.http.get.profilePic');
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
     console.log("Auth response received");
 
@@ -261,7 +268,7 @@ exports.fetchUserImage = async (req, res) => {
 };
 
 exports.deleteUserImage = async (req, res) => {
-
+    sdc.increment('endpoint.user.http.delete.profilePic');
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
     console.log("Auth response received");
 

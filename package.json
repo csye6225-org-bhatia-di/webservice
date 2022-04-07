@@ -16,6 +16,7 @@
   "author": "Diksha Bhatia",
   "license": "ISC",
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "assert": "^2.0.0",
     "aws-sdk": "^2.1088.0",
     "basic-auth": "^2.0.1",
@@ -30,7 +31,9 @@
     "sequelize": "^6.16.1",
     "sequelize-auto-migrations": "^1.0.3",
     "uuid4": "^2.0.2",
-    "uuidv4": "^6.2.12"
+    "uuidv4": "^6.2.12",
+    "winston": "^3.3.3",
+    "statsd-client": "^0.4.7"
   },
   "devDependencies": {
     "mocha": "^9.2.0",

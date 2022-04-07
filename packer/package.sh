@@ -29,6 +29,8 @@ sleep 30
 sudo service codedeploy-agent start
 sudo service codedeploy-agent status
 echo "codedeploy agent status completed"
+echo "installing cloud watch agent"
+sudo yum install amazon-cloudwatch-agent
 echo "########## Unzip begins #############"
 ls
 sleep 30
