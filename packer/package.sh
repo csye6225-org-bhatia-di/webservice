@@ -30,7 +30,8 @@ sudo service codedeploy-agent start
 sudo service codedeploy-agent status
 echo "codedeploy agent status completed"
 echo "installing cloud watch agent"
-sudo yum install amazon-cloudwatch-agent
+sudo yum install -y amazon-cloudwatch-agent
+sleep 50
 echo "########## Unzip begins #############"
 ls
 sleep 30
@@ -44,7 +45,7 @@ sudo chown ec2-user ./*
 ls -la
 echo "########## Unzipped #############"
 sleep 10
-sudo npm install
+sudo npm i -g npm
 sudo npm install bcrypt
 sudo npm install -g nodemon
 sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
