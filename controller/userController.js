@@ -13,7 +13,7 @@ const sdc = new SDC({host: 'localhost', port: 8125});
 exports.fetchUser = async (req, res) => {
 
     console.log("Fetch  User Controller Started");
-    console.log("Request Info", req.body);
+    console.log("Request Info-", req.body);
     sdc.increment('endpoint.user.http.get');
 
 
