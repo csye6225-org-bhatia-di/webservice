@@ -47,7 +47,8 @@ sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
 sudo systemctl enable webservice.service
 sudo systemctl start webservice.service
 echo "Staring db-migrate"
-sudo npm db-migrate
+ls -la
+sudo npm run db-migrate
 sleep 15
 echo "############### Starting up Cloud watch agent ##############"
 cd ../../
