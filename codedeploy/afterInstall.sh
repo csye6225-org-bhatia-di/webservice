@@ -10,5 +10,5 @@ sudo npm i -g npm
 sudo npm install bcrypt
 sudo npm i
 sudo npm install -g nodemon
-sudo npm db-migrate
+sudo npm run db-migrate
 sleep 5
