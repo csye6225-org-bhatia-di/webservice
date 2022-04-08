@@ -12,3 +12,4 @@ sudo npm i
 sudo npm install -g nodemon
 sudo npm run db-migrate
 sleep 5
+echo "complete"
