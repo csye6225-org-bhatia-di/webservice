@@ -50,5 +50,6 @@ echo "############### Starting up Cloud watch agent ##############"
 cd ../../
 pwd
 ls -la
+echo "Beginning to start cloud watch"
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/tmp/webservice/amazon-cloudwatch-agent.json -s
 sleep 30
