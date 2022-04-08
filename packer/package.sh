@@ -40,7 +40,7 @@ sudo chown ec2-user ./*
 ls -la
 echo "########## Unzipped #############"
 sleep 10
-sudo npm i -g npm
+sudo npm install
 sudo npm install bcrypt
 sudo npm install -g nodemon
 sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
