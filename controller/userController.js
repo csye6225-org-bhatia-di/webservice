@@ -184,8 +184,8 @@ exports.uploadUserImage = async (req, res) => {
 
         await s3Server.uploadImageToS3Bucket(currentImageKey, userInfo.id, req.file)
         .then(data => {
-            console.log("#### response from s3  ####");
-            console.log(data);
+            logger.info("#### response from s3  ####");
+            logger.info(data);
             s3Response = data;           
         })
         .catch(err => {
@@ -217,11 +217,11 @@ exports.uploadUserImage = async (req, res) => {
 exports.fetchUserImage = async (req, res) => {
     sdc.increment('endpoint.user.http.get.profilePic');
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-    console.log("Auth response received");
+    logger.info("Auth response received");
 
     if(userObject !== null) {
 
-        console.log("Successful Atuh");
+        logger.info("Successful Atuh");
         let userInfo = userObject;
         const userImageMappingObject = await UserToImageMapping.findOne({where: {
             userID: userInfo.id
@@ -235,7 +235,7 @@ exports.fetchUserImage = async (req, res) => {
         let s3Response = {}
         await s3Server.fetchImageFromS3Bucket(userImageMappingObject.imageKey)
         .then(data => {
-            console.log("#### response from s3  ####");
+            logger.info("#### response from s3  ####");
             console.log(data);
             s3Response = data; 
             res.status(200).send({
@@ -270,11 +270,11 @@ exports.fetchUserImage = async (req, res) => {
 exports.deleteUserImage = async (req, res) => {
     sdc.increment('endpoint.user.http.delete.profilePic');
     const userObject = await authorization.authorizeAndFetchUserInfo(req, res, User);
-    console.log("Auth response received");
+    logger.info("Auth response received");
 
     if(userObject !== null) {
 
-        console.log("Successful Atuh");
+        logger.info("Successful Atuh");
         let userInfo = userObject;
         const userImageMappingObject = await UserToImageMapping.findOne({where: {
             userID: userInfo.id
@@ -287,8 +287,8 @@ exports.deleteUserImage = async (req, res) => {
             let s3Response = {};
             await s3Server.deleteImageFromS3Bucket(userImageMappingObject.imageKey)
             .then(data => {
-                console.log("#### response for delete from s3  ####");
-                console.log(data);
+                logger.info("#### response for delete from s3  ####");
+                logger.info(data);
                 s3Response = data; 
                 userImageMappingObject.destroy();
                 res.status(204).send();        
