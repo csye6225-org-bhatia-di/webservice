@@ -16,10 +16,6 @@ $CODEDEPLOY_BIN stop
 yum erase -y codedeploy-agent
 echo "############ Changing location to ec2-user ###############"
 cd /home/ec2-user
-echo "#### aws code deploy bucket name ####"
-echo $aws_code_deploy_bucket_name
-echo "#### aws code region ####"
-echo $aws_region
 wget  https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
 echo "# installing code deploy agent"
 ls -la
@@ -31,7 +27,6 @@ sudo service codedeploy-agent status
 echo "codedeploy agent status completed"
 echo "installing cloud watch agent"
 sudo yum install -y amazon-cloudwatch-agent
-sleep 50
 echo "########## Unzip begins #############"
 ls
 sleep 30
@@ -51,3 +46,12 @@ sudo npm install -g nodemon
 sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
 sudo systemctl enable webservice.service
 sudo systemctl start webservice.service
+echo "Staring db-migrate"
+sudo npm db-migrate
+sleep 15
+echo "############### Starting up Cloud watch agent ##############"
+cd ../../
+pwd
+ls -la
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/tmp/webservice/amazon-cloudwatch-agent.json -s
+sleep 30
