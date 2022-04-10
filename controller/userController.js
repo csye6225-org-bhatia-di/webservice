@@ -9,6 +9,7 @@ const upload = multer({dest: 'imgUploads/'});
 const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
+const createDynamoModule = require('../token_dynamodb/createDynamoDbTable');
 
 exports.fetchUser = async (req, res) => {
 
@@ -45,63 +46,66 @@ exports.createUser = async (req, res) => {
     const last_name = req.body.last_name;
     const username = req.body.username;
     const password = req.body.password;
+    await createDynamoModule.dynamoCreateTableObject();
+
+
     
-    if(username && password && first_name && last_name) {       
+    // if(username && password && first_name && last_name) {       
 
 
-            const isUserNamePresent = await User.findOne({ where: {username: username}});
-            logger.info(" user found ");
+    //         const isUserNamePresent = await User.findOne({ where: {username: username}});
+    //         logger.info(" user found ");
             
 
-            if(isUserNamePresent != null) {
+    //         if(isUserNamePresent != null) {
 
-                res.status(409).send({
-                    message: "Invalid Request. User already exists"
-                });
+    //             res.status(409).send({
+    //                 message: "Invalid Request. User already exists"
+    //             });
 
                
 
-            } else {
+    //         } else {
 
-                const salt = await bcrypt.genSalt(10);
-                const hashedPassword = await bcrypt.hash(password,salt);
+    //             const salt = await bcrypt.genSalt(10);
+    //             const hashedPassword = await bcrypt.hash(password,salt);
 
 
-                const user = {
+    //             const user = {
 
-                    id: uuidv4.uuid(),
-                    first_name: first_name,
-                    last_name: last_name,
-                    password: hashedPassword,
-                    username: username
-                };
+    //                 id: uuidv4.uuid(),
+    //                 first_name: first_name,
+    //                 last_name: last_name,
+    //                 password: hashedPassword,
+    //                 username: username
+    //             };
 
-                User.create(user)
-                    .then(data => {
+    //             User.create(user)
+    //                 .then(data => {
 
-                        let temp = data.toJSON();
-                        delete temp.password;
-                        res.status(201).send(temp);
-                        console.log("User has been created.")
+    //                     let temp = data.toJSON();
+    //                     delete temp.password;
+    //                     res.status(201).send(temp);
+    //                     console.log("User has been created.")
 
-                    })
-                    .catch(err => {
+    //                 })
+    //                 .catch(err => {
 
-                        res.status(500).send({
-                            message: err.message
-                        });
-                    });
+    //                     res.status(500).send({
+    //                         message: err.message
+    //                     });
+    //                 });
 
-            }
+    //         }
 
         
         
-    } else {
+    // } else {
 
-        res.status(400).send({
-            message: "Some required fields were not passed as a part of the request."
-        });
-    }
+    //     res.status(400).send({
+    //         message: "Some required fields were not passed as a part of the request."
+    //     });
+    // }
 
 };
 
