@@ -197,7 +197,7 @@ exports.uploadUserImage = async (req, res) => {
         if (Object.keys(s3Response).length >= 1) {
             await updateUserToImageMapping(req.file, userInfo, s3Response, res);     
         } else {
-            res.status(400).send({"message": "not well"});
+            res.status(400).send({"message": "failecd! not well"});
         }
 
          
