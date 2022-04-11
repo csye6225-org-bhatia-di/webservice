@@ -1,1 +1,1 @@
-exports.DYNAMO_DB_TABLE_NAME = "UserTokenTable";
+exports.DYNAMO_DB_TABLE_NAME = "UserTokenTabel";

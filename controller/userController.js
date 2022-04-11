@@ -13,6 +13,8 @@ const createDynamoModule = require('../token_dynamodb/createDynamoDbTable');
 const dynamoTableObjectModule = require('../token_dynamodb/dynamoTableObjects');
 const publishToSNSModule = require('../aws-sns/publishToSNS');
 const moment = require('moment');
+require("dotenv").config();
+const fs = require("fs");
 
 exports.fetchUser = async (req, res) => {
 
@@ -49,84 +51,89 @@ exports.createUser = async (req, res) => {
     const last_name = req.body.last_name;
     const username = req.body.username;
     const password = req.body.password;
-    const createTableWorkflow = await createDynamoModule.dynamoCreateTableObject();
-    logger.info("Workflow " + createTableWorkflow);
-    if (createTableWorkflow) {
-        logger.info("## create table workflow - complete ##");
-        var momentObj = moment().add(5, 'm');
-
-        const putItemObject = {
-            "emailId": {'S' : uuidv4.uuid().toString()},
-            "username": {'S' : username},
-            "token": {'S': 'ABC'},
-            "expiration_time": {'N': momentObj.unix().toString()},
-            "domainName": {'S': process.env.DOMAIN_NAME}
-        };
-        dynamoTableObjectModule.dynamoDbPutObjectWithTTL(putItemObject);
-
-        publishToSNSModule.publicNewUserMessage(putItemObject);
-    }
+    // const createTableWorkflow = await createDynamoModule.dynamoCreateTableObject();
+    // logger.info("Workflow " + createTableWorkflow);
+    // if (createTableWorkflow) {
+    //      }
 
 
     
-    // if(username && password && first_name && last_name) {       
+    if(username && password && first_name && last_name) {       
 
 
-    //         const isUserNamePresent = await User.findOne({ where: {username: username}});
-    //         logger.info(" user found ");
+            const isUserNamePresent = await User.findOne({ where: {username: username}});
+            logger.info(" user found ");
             
 
-    //         if(isUserNamePresent != null) {
+            if(isUserNamePresent != null) {
 
-    //             res.status(409).send({
-    //                 message: "Invalid Request. User already exists"
-    //             });
+                res.status(409).send({
+                    message: "Invalid Request. User already exists"
+                });
 
                
 
-    //         } else {
+            } else {
 
-    //             const salt = await bcrypt.genSalt(10);
-    //             const hashedPassword = await bcrypt.hash(password,salt);
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password,salt);
 
 
-    //             const user = {
+                const user = {
 
-    //                 id: uuidv4.uuid(),
-    //                 first_name: first_name,
-    //                 last_name: last_name,
-    //                 password: hashedPassword,
-    //                 username: username
-    //             };
+                    id: uuidv4.uuid(),
+                    first_name: first_name,
+                    last_name: last_name,
+                    password: hashedPassword,
+                    username: username
+                };
 
-    //             User.create(user)
-    //                 .then(data => {
+                User.create(user)
+                    .then(data => {
 
-    //                     let temp = data.toJSON();
-    //                     delete temp.password;
-    //                     res.status(201).send(temp);
-    //                     console.log("User has been created.")
+                        let temp = data.toJSON();
+                        delete temp.password;
+                        generateTokenAndPublishToSNS(username);
+                        res.status(201).send(temp);
+                        console.log("User has been created.")
 
-    //                 })
-    //                 .catch(err => {
+                    })
+                    .catch(err => {
 
-    //                     res.status(500).send({
-    //                         message: err.message
-    //                     });
-    //                 });
+                        res.status(500).send({
+                            message: err.message
+                        });
+                    });
 
-    //         }
+            }
 
         
         
-    // } else {
+    } else {
 
-    //     res.status(400).send({
-    //         message: "Some required fields were not passed as a part of the request."
-    //     });
-    // }
+        res.status(400).send({
+            message: "Some required fields were not passed as a part of the request."
+        });
+    }
 
 };
+
+async function generateTokenAndPublishToSNS(username) {
+    logger.info("## create table workflow - complete ##");
+    var momentObj = moment().add(5, 'm');
+
+    const putItemObject = {
+        "emailId": {'S' : uuidv4.uuid().toString()},
+        "username": {'S' : username},
+        "token": {'S': 'ABC'},
+        "expiration_time": {'N': momentObj.unix().toString()},
+        "domainName": {'S': process.env.DOMAIN_NAME}
+    };
+    dynamoTableObjectModule.dynamoDbPutObjectWithTTL(putItemObject);
+
+    publishToSNSModule.publicNewUserMessage(putItemObject);
+
+}
 
 exports.updateUser = async (req, res) => {
     sdc.increment('endpoint.user.http.put');
