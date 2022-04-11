@@ -6,15 +6,11 @@ const appConstants = require('../utils/constants');
 const moment = require('moment');
 
 exports.dynamoDbPutObjectWithTTL = async (item) => {
-    var momentObj = moment().now().add(2, 'm');
-
+    var momentObj = moment().add(2, 'm');
+    logger.info("Expiration time: " + momentObj.unix());
+    logger.info("Put Item Object: ", item);
     dynamoDBObj.putItem({
-        Item: {
-            userId: item.userId,
-            username: item.username,
-            token: 'ABC',
-            expiration_time: momentObj.unix()
-        },
+        Item: item,
         TableName: appConstants.DYNAMO_DB_TABLE_NAME
 
     }).promise()

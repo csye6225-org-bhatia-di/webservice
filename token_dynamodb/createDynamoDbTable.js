@@ -27,22 +27,22 @@ const tokenTableParams = {
 
 exports.dynamoCreateTableObject = async () => {
     logger.info("Checking if Table Object already exisits. ");
+    var resultWorkFlow = false;
     const existingTableNames = await listDynamoTables.dynamoListTableObject();
     console.log(existingTableNames);
     logger.info("###############");
-    if (Array.isArray(existingTableNames) && existingTableNames.includes(appConstants.DYNAMO_DB_TABLE_NAMEs)) {
+    if (Array.isArray(existingTableNames) && existingTableNames.includes(appConstants.DYNAMO_DB_TABLE_NAME)) {
         logger.info("Table: " + appConstants.DYNAMO_DB_TABLE_NAME + " already exists");
-        return;
+        resultWorkFlow = true;
     } else {
         logger.info("Table doesnt exist");
         logger.info("creating table");
         const tableCreated = await dynamoDBObj.createTable(tokenTableParams).promise().then((data) => {
             logger.info("table created");
-            return true;
         }).catch(error => {
             logger.error("Error conecting to dynamo db " + error.message);
         });
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 7000));
 
         if(tableCreated) {
             logger.info("updating time to live on the table");
@@ -54,13 +54,15 @@ exports.dynamoCreateTableObject = async () => {
                 }
             }).promise().then(data => {
                 logger.info("Time to lve enabled");
+                resultWorkFlow = true;
             }).catch(error => {
                 logger.error("Time to lve failed to enable. " + error.message);
             });
         }
 
     }
-
+    console.log(resultWorkFlow);
+    return resultWorkFlow;
 
 
 };

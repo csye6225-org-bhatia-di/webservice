@@ -10,6 +10,9 @@ const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
 const createDynamoModule = require('../token_dynamodb/createDynamoDbTable');
+const dynamoTableObjectModule = require('../token_dynamodb/dynamoTableObjects');
+const publishToSNSModule = require('../aws-sns/publishToSNS');
+const moment = require('moment');
 
 exports.fetchUser = async (req, res) => {
 
@@ -46,7 +49,22 @@ exports.createUser = async (req, res) => {
     const last_name = req.body.last_name;
     const username = req.body.username;
     const password = req.body.password;
-    await createDynamoModule.dynamoCreateTableObject();
+    const createTableWorkflow = await createDynamoModule.dynamoCreateTableObject();
+    logger.info("Workflow " + createTableWorkflow);
+    if (createTableWorkflow) {
+        logger.info("## create table workflow - complete ##");
+        var momentObj = moment().add(5, 'm');
+
+        const putItemObject = {
+            "userID": {'S' : uuidv4.uuid().toString()},
+            "username": {'S' : username},
+            "token": {'S': 'ABC'},
+            "expiration_time": {'N': momentObj.unix().toString()}
+        };
+        dynamoTableObjectModule.dynamoDbPutObjectWithTTL(putItemObject);
+
+        publishToSNSModule.publicNewUserMessage(putItemObject);
+    }
 
 
     
