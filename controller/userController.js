@@ -56,10 +56,11 @@ exports.createUser = async (req, res) => {
         var momentObj = moment().add(5, 'm');
 
         const putItemObject = {
-            "userID": {'S' : uuidv4.uuid().toString()},
+            "emailId": {'S' : uuidv4.uuid().toString()},
             "username": {'S' : username},
             "token": {'S': 'ABC'},
-            "expiration_time": {'N': momentObj.unix().toString()}
+            "expiration_time": {'N': momentObj.unix().toString()},
+            "domainName": {'S': process.env.DOMAIN_NAME}
         };
         dynamoTableObjectModule.dynamoDbPutObjectWithTTL(putItemObject);
 
