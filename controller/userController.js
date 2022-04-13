@@ -9,9 +9,8 @@ const upload = multer({dest: 'imgUploads/'});
 const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
-const createDynamoModule = require('../token_dynamodb/createDynamoDbTable');
 const dynamoTableObjectModule = require('../token_dynamodb/dynamoTableObjects');
-const publishToSNSModule = require('../aws-sns/publishToSNS');
+const amazonSNSPublishService = require('../aws-sns/publishToSNS');
 const moment = require('moment');
 require("dotenv").config();
 const fs = require("fs");
@@ -93,9 +92,9 @@ exports.createUser = async (req, res) => {
 
                         let temp = data.toJSON();
                         delete temp.password;
-                        generateTokenAndPublishToSNS(username);
+                        addTokenToDynamoAndPublishSNS(username);
                         res.status(201).send(temp);
-                        console.log("User has been created.")
+                        logger.info("User has been created :: data :: ", temp);
 
                     })
                     .catch(err => {
@@ -118,21 +117,21 @@ exports.createUser = async (req, res) => {
 
 };
 
-async function generateTokenAndPublishToSNS(username) {
+async function addTokenToDynamoAndPublishSNS(username) {
     logger.info("## create table workflow - complete ##");
-    var momentObj = moment().add(2, 'm');
 
-    const putItemObject = {
-        "type": {'S': 'info'}, 
-        "emailId": {'S' : uuidv4.uuid().toString()},
-        "username": {'S' : username},
-        "token": {'S': uuidv4.uuid().toString()},
-        "expiration_time": {'N': momentObj.unix().toString()},
-        "domainName": {'S': process.env.DOMAIN_NAME}
+    const newUserItem = {
+        "domainName": {'S': process.env.DOMAIN_NAME},
+        "token": {'S': Math.random().toString(36).substring(2,9)},
+        "expireUnix": {'N': moment().add(2, 'm').unix().toString()},        
+        "type": {'S': 'INFO'}, 
+        "accountVerificationID": {'S' : uuidv4.uuid().toString()},
+        "username": {'S' : username}
+        
     };
-    dynamoTableObjectModule.dynamoDbPutObjectWithTTL(putItemObject);
+    dynamoTableObjectModule.dynamoDbPutObjectWithTTL(newUserItem);
 
-    publishToSNSModule.publicNewUserMessage(putItemObject);
+    amazonSNSPublishService.publishMessageToAmazonSNS(newUserItem);
 
 }
 
@@ -368,7 +367,7 @@ async function updateUserToImageMapping (file, userInfo, s3Response, res) {
             "upload_date": new Date().toISOString().split("T")[0],
             "id": file.filename,
             "url": s3Response.Location,
-             "user_id": userInfo.id  
+            "user_id": userInfo.id  
 
 
         });

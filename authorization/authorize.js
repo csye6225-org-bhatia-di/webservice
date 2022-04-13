@@ -42,9 +42,9 @@ const authorizeAndFetchUserInfo = async (req,res, User) => {
                         Unauthorized: "Invalid Credentials"
                     });
 
-                } else if(userObject.isVerified == false) {
+                } else if(!userObject.isVerified) {
                     res.status(400).send({
-                        Unauthorized: "The account has not been verified."
+                        message: "Your account has not been verified. Please check your email to verify your account"
                     });
                 } else {
 
