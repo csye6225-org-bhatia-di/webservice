@@ -120,12 +120,13 @@ exports.createUser = async (req, res) => {
 
 async function generateTokenAndPublishToSNS(username) {
     logger.info("## create table workflow - complete ##");
-    var momentObj = moment().add(5, 'm');
+    var momentObj = moment().add(2, 'm');
 
     const putItemObject = {
+        "type": {'S': 'info'}, 
         "emailId": {'S' : uuidv4.uuid().toString()},
         "username": {'S' : username},
-        "token": {'S': 'ABC'},
+        "token": {'S': uuidv4.uuid().toString()},
         "expiration_time": {'N': momentObj.unix().toString()},
         "domainName": {'S': process.env.DOMAIN_NAME}
     };
