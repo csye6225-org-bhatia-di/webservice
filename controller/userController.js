@@ -10,7 +10,7 @@ const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
 const awsDynamoService = require('../dynamodb/dynamoDbClientService');
-const amazonSNSPublishService = require('../aws-sns/AwsSNSService');
+const amazonSNSPublishService = require('../aws_sns/AwsSNSService');
 const moment = require('moment');
 require("dotenv").config();
 const fs = require("fs");
