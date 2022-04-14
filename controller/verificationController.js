@@ -5,7 +5,7 @@ const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
 const User = require('../models').user; // loads index.js
 const appConstants = require('../utils/constants');
-const dynamoTableObjectModule = require('../dynamodb/dynamoDbClientService');
+const dynamoTableObjectModule = require('../aws_dynamodb/dynamoDbClientService');
 const moment = require("moment");
 
 exports.verifyCreatedUser = async (request, response) => {    
