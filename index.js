@@ -14,6 +14,11 @@ app.use('/healthz', healthRoute);
 const userRoute = require('./routes/userRoute');
 app.use('/v2/user', userRoute);
 
+//Importing verify user email
+const verifyUserRoute = require('./routes/verificationUserRoute');
+app.use('/v1/verifyUserEmail', verifyUserRoute);
+
+
 
 
 

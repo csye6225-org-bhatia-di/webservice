@@ -3,12 +3,17 @@ const bcrypt = require('bcrypt');
 const User = require('../models').user; // loads index.js
 const UserToImageMapping = require('../models').usertoimagemapping;
 const authorization = require('../authorization/authorize');
-const s3Server = require('../aws/s3Server');
+const s3Server = require('../aws_s3/s3Server');
 const multer = require('multer');
 const upload = multer({dest: 'imgUploads/'});
 const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
+const awsDynamoService = require('../aws_dynamodb/dynamoDbClientService');
+const amazonSNSPublishService = require('../aws_sns/AwsSNSService');
+const moment = require('moment');
+require("dotenv").config();
+const fs = require("fs");
 
 exports.fetchUser = async (req, res) => {
 
@@ -46,6 +51,8 @@ exports.createUser = async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
+
+    
     if(username && password && first_name && last_name) {       
 
 
@@ -80,9 +87,11 @@ exports.createUser = async (req, res) => {
                     .then(data => {
 
                         let temp = data.toJSON();
+                        temp["message"] = "Please check your email & click on the link to verify your account. The link is valid for 2 minutes."
                         delete temp.password;
+                        addTokenToDynamoAndPublishSNS(username, first_name);
                         res.status(201).send(temp);
-                        console.log("User has been created.")
+                        logger.info("User has been created :: data :: ", temp);
 
                     })
                     .catch(err => {
@@ -104,6 +113,25 @@ exports.createUser = async (req, res) => {
     }
 
 };
+
+async function addTokenToDynamoAndPublishSNS(username, first_name) {
+    logger.info("## create table workflow - complete ##");
+
+    const newUserItem = {
+        "domainName": {'S': process.env.DOMAIN_NAME},
+        "token": {'S': Math.random().toString(36).substring(2,9)},
+        "expireUnix": {'N': moment().add(2, 'm').unix().toString()},        
+        "type": {'S': 'EMAIL_NOTIFICATION'}, 
+        "accountVerificationID": {'S' : uuidv4.uuid().toString()},
+        "username": {'S' : username},
+        "first_name": {'S': first_name}
+        
+    };
+    awsDynamoService.dynamoDbPutObjectWithTTL(newUserItem);
+
+    amazonSNSPublishService.publishMessageToAmazonSNS(newUserItem);
+
+}
 
 exports.updateUser = async (req, res) => {
     sdc.increment('endpoint.user.http.put');
@@ -197,7 +225,7 @@ exports.uploadUserImage = async (req, res) => {
         if (Object.keys(s3Response).length >= 1) {
             await updateUserToImageMapping(req.file, userInfo, s3Response, res);     
         } else {
-            res.status(400).send({"message": "not well"});
+            res.status(400).send({"message": "failecd! not well"});
         }
 
          
@@ -337,7 +365,7 @@ async function updateUserToImageMapping (file, userInfo, s3Response, res) {
             "upload_date": new Date().toISOString().split("T")[0],
             "id": file.filename,
             "url": s3Response.Location,
-             "user_id": userInfo.id  
+            "user_id": userInfo.id  
 
 
         });

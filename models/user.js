@@ -40,6 +40,10 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING,
       allowNull: false
   },
+  isVerified: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
   created_at: {
     timestamp: true,
     allowNull: false,
