@@ -8,7 +8,7 @@ const appConstants = require('../utils/constants');
 const dynamoTableObjectModule = require('../dynamodb/dynamoDbClientService');
 const moment = require("moment");
 
-exports.verifyUser = async (request, response) => {    
+exports.verifyCreatedUser = async (request, response) => {    
    sdc.increment('endpoint.user.http.get.verificationUser');
 
    const urlParams = new URLSearchParams(request.url.replace('/v1/verifyUserEmail', '').replace('/', ''));
