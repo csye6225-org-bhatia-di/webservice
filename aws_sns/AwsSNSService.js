@@ -23,21 +23,19 @@ exports.publishMessageToAmazonSNS = async (messageParams) => {
                 DataType: 'String', 
                 StringValue: messageParams.token.S
             },
-            'expireUnix': {
-                DataType: 'Number', 
-                StringValue: messageParams.expireUnix.S
-            },
+            
             'type': {
                 DataType: 'String', 
                 StringValue: messageParams.type.S
             },
-            'accountVerificationID': {
-                DataType: 'String', 
-                StringValue: messageParams.accountVerificationID.S
-            },
+            
             'username': {
                 DataType: 'String', 
                 StringValue: messageParams.username.S
+            },
+            'first_name': {
+                DataType: 'String',
+                StringValue: messageParams.first_name.S
             }
 
           }, 

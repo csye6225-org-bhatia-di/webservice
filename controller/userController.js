@@ -89,7 +89,7 @@ exports.createUser = async (req, res) => {
                         let temp = data.toJSON();
                         temp["message"] = "Please check your email & click on the link to verify your account. The link is valid for 2 minutes."
                         delete temp.password;
-                        addTokenToDynamoAndPublishSNS(username);
+                        addTokenToDynamoAndPublishSNS(username, first_name);
                         res.status(201).send(temp);
                         logger.info("User has been created :: data :: ", temp);
 
@@ -114,7 +114,7 @@ exports.createUser = async (req, res) => {
 
 };
 
-async function addTokenToDynamoAndPublishSNS(username) {
+async function addTokenToDynamoAndPublishSNS(username, first_name) {
     logger.info("## create table workflow - complete ##");
 
     const newUserItem = {
@@ -123,7 +123,8 @@ async function addTokenToDynamoAndPublishSNS(username) {
         "expireUnix": {'N': moment().add(2, 'm').unix().toString()},        
         "type": {'S': 'EMAIL_NOTIFICATION'}, 
         "accountVerificationID": {'S' : uuidv4.uuid().toString()},
-        "username": {'S' : username}
+        "username": {'S' : username},
+        "first_name": {'S': first_name}
         
     };
     awsDynamoService.dynamoDbPutObjectWithTTL(newUserItem);
