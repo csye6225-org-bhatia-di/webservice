@@ -3,13 +3,13 @@ const bcrypt = require('bcrypt');
 const User = require('../models').user; // loads index.js
 const UserToImageMapping = require('../models').usertoimagemapping;
 const authorization = require('../authorization/authorize');
-const s3Server = require('../aws/s3Server');
+const s3Server = require('../aws_s3/s3Server');
 const multer = require('multer');
 const upload = multer({dest: 'imgUploads/'});
 const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
-const awsDynamoService = require('../dynamodb/dynamoDbClientService');
+const awsDynamoService = require('../aws_dynamodb/dynamoDbClientService');
 const amazonSNSPublishService = require('../aws_sns/AwsSNSService');
 const moment = require('moment');
 require("dotenv").config();
