@@ -87,6 +87,7 @@ exports.createUser = async (req, res) => {
                     .then(data => {
 
                         let temp = data.toJSON();
+                        temp["message"] = "Please check your email & click on the link to verify your account. The link is valid for 2 minutes."
                         delete temp.password;
                         addTokenToDynamoAndPublishSNS(username);
                         res.status(201).send(temp);
