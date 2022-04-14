@@ -9,8 +9,8 @@ const upload = multer({dest: 'imgUploads/'});
 const SDC = require('statsd-client');
 const logger = require('../config/logger');
 const sdc = new SDC({host: 'localhost', port: 8125});
-const dynamoTableObjectModule = require('../token_dynamodb/dynamoTableObjects');
-const amazonSNSPublishService = require('../aws-sns/publishToSNS');
+const awsDynamoService = require('../dynamodb/dynamoDbClientService');
+const amazonSNSPublishService = require('../aws-sns/AwsSNSService');
 const moment = require('moment');
 require("dotenv").config();
 const fs = require("fs");
@@ -50,11 +50,7 @@ exports.createUser = async (req, res) => {
     const last_name = req.body.last_name;
     const username = req.body.username;
     const password = req.body.password;
-    // const createTableWorkflow = await createDynamoModule.dynamoCreateTableObject();
-    // logger.info("Workflow " + createTableWorkflow);
-    // if (createTableWorkflow) {
-    //      }
-
+    
 
     
     if(username && password && first_name && last_name) {       
@@ -124,12 +120,12 @@ async function addTokenToDynamoAndPublishSNS(username) {
         "domainName": {'S': process.env.DOMAIN_NAME},
         "token": {'S': Math.random().toString(36).substring(2,9)},
         "expireUnix": {'N': moment().add(2, 'm').unix().toString()},        
-        "type": {'S': 'INFO'}, 
+        "type": {'S': 'EMAIL_NOTIFICATION'}, 
         "accountVerificationID": {'S' : uuidv4.uuid().toString()},
         "username": {'S' : username}
         
     };
-    dynamoTableObjectModule.dynamoDbPutObjectWithTTL(newUserItem);
+    awsDynamoService.dynamoDbPutObjectWithTTL(newUserItem);
 
     amazonSNSPublishService.publishMessageToAmazonSNS(newUserItem);
 

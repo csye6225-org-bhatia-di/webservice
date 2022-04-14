@@ -15,7 +15,7 @@ const userRoute = require('./routes/userRoute');
 app.use('/v1/user', userRoute);
 
 //Importing verify user email
-const verifyUserRoute = require('./routes/verifyUserRoute');
+const verifyUserRoute = require('./routes/verificationUserRoute');
 app.use('/v1/verifyUserEmail', verifyUserRoute);
 
 

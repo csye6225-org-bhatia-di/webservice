@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const VerifyUserController = require('../controller/verifyUserController');
+const VerifyUserController = require('../controller/verificationController');
 
 router.get("/", VerifyUserController.verifyUser);
 
