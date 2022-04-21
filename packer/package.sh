@@ -35,6 +35,10 @@ echo "Inside tmp/"
 ls -la
 sudo unzip webservice.zip
 sudo chown ec2-user:ec2-user webservice
+sudo wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+sudo mv global-bundle.pem /tmp/webservice/config/
+sudo chown ec2-user:ec2-user /tmp/webservice/config/global-bundle.pem
+sudo chmod 600 /tmp/webservice/config/global-bundle.pem
 cd webservice
 sudo chown ec2-user ./*
 ls -la
