@@ -5,7 +5,7 @@ sudo yum -y update
 echo "####### installing dependencies ############"
 sudo yum install -y zip unzip ruby wget
 sudo mv /tmp/pgdg.repo /etc/yum.repos.d/pgdg.repo
-sudo yum install -y postgresql12
+sudo yum install -y postgresql13
 sleep 30
 echo "############ Installing Node #################"
 curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
